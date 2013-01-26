@@ -51,7 +51,7 @@ class Viejo(pilas.actores.Calvo):
 
 class Pareja(object):
 
-    def __init__(self):
+    def __init__(self, x, y):
         self.velocidad = float("0.{}".format(random.randint(7, 9)))
         if random.randint(0, 1):
             self.left = pilas.actores.Animacion(
@@ -77,6 +77,7 @@ class Pareja(object):
         )
 
         self.right.espejado = True
+        self.x, self.y = x, y
 
     def romper_pareja(self):
         self.eliminar()

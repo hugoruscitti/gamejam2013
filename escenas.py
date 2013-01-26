@@ -17,9 +17,17 @@
 # IMPORTS
 #===============================================================================
 
+import random
+
 import pilas
 
 import actores
+
+#===============================================================================
+# CANTIDAD PAREJAS
+#===============================================================================
+
+CANTIDAD_PAREJAS = 20
 
 
 #===============================================================================
@@ -89,6 +97,15 @@ class Menu(pilas.escena.Base):
 
 class Juego(pilas.escena.Base):
 
+    def random_xy(self):
+        x = (random.randint(0, self.mapa.ancho) / 2) + 10
+        y = (random.randint(0, self.mapa.alto) / 2) + 10
+        if random.randint(0, 1):
+            x = -x
+        if random.randint(0, 1):
+            y = -y
+        return x, y
+
     def centrar_camara(self, evt):
         mm_ancho = self.mapa.ancho / 2
         mm_alto = self.mapa.alto / 2
@@ -109,33 +126,39 @@ class Juego(pilas.escena.Base):
         self.viejo = actores.Viejo(self.mapa)
         self.actualizar.conectar(self.centrar_camara)
 
+        # CREAR PAREJAS
+        for x in range(CANTIDAD_PAREJAS):
+            x, y = self.random_xy()
+            pareja = actores.Pareja(x, y)
+
+
 #===============================================================================
 # ENCUENTRO
 #===============================================================================
 class Barra():
-    
+
     def __init__(self, items):
         for i,item in enumerate(items):
             actor = pilas.actores.Actor(item)
             actor.x = -205 + (i * 50)
             actor.y = -195
-    
+
 class Encuentro(pilas.escena.Base):
 
     def __init__(self, pareja="parejatest.jpg", items=["itemtest.png", "itemtest.png", "itemtest.png"]):
         pilas.escena.Base.__init__(self)
         self.pareja = pareja
         self.items = items
-        
+
     def iniciar(self):
         try:
             # bajar volumen musicajuego: self.musicajuego.bajarVolumen(10%)
             # reproducir latido corazon
-            
+
             pass
         except:
             pass
-            
+
         pilas.fondos.Fondo("fondoencuentro.png")
         pareja = pilas.actores.Actor(self.pareja)
         pareja.escala = 0.8
