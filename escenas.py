@@ -106,7 +106,7 @@ class Juego(pilas.escena.Base):
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
         self.viejo = actores.Viejo(self.mapa)
         pilas.mundo.agregar_tarea_siempre(2, self.centrar_camara)
-        
+
 
 #===============================================================================
 # MAIN

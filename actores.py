@@ -31,6 +31,7 @@ class Viejo(pilas.actores.Calvo):
     def __init__(self, *args, **kwargs):
         super(Viejo, self).__init__(*args, **kwargs)
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
+        #self.aprender(habilidades.SeMantieneEnPantalla)
 
 
 #===============================================================================
@@ -39,49 +40,75 @@ class Viejo(pilas.actores.Calvo):
 
 class Pareja(object):
 
-    MIEMBROS = ["miembro{}.png".format(idx) for idx in range(6)]
-
     def __init__(self):
-        left = random.choice(Pareja.MIEMBROS)
-        right = random.choice(Pareja.MIEMBROS)
-        while right == left:
-            right = random.choice(Pareja.MIEMBROS)
+        self.velocidad = float("0.{}".format(random.randint(7, 9)))
+        if random.randint(0, 1):
+            self.left = pilas.actores.Animacion(
+                pilas.imagenes.cargar_grilla("miembro0.png", 2),
+                True, velocidad=self.velocidad
+            )
+            self.right = pilas.actores.Animacion(
+                pilas.imagenes.cargar_grilla("miembro1.png", 2),
+                True, velocidad=self.velocidad
+            )
+        else:
+            self.left = pilas.actores.Animacion(
+                pilas.imagenes.cargar_grilla("miembro1.png", 2),
+                True, velocidad=self.velocidad
+            )
+            self.right = pilas.actores.Animacion(
+                pilas.imagenes.cargar_grilla("miembro0.png", 2),
+                True, velocidad=self.velocidad
+            )
         self.corazon = pilas.actores.Animacion(
-            pilas.imagenes.cargar_grilla("corazon.png", 2), True
+            pilas.imagenes.cargar_grilla("corazon.png", 2),
+            True, velocidad=0.9
         )
-        self.left = pilas.actores.Animacion(
-            pilas.imagenes.cargar_grilla(left, 2), True
-        )
-        self.right = pilas.actores.Animacion(
-            pilas.imagenes.cargar_grilla(right, 2), True
-        )
+
         self.right.espejado = True
 
     def romper_pareja(self):
-        self.corazon.imagen = pilas.imagenes.cargar_imagen("corazon_roto.png")
-        self.left.imagen = (
-            pilas.imagenes.cargar_grilla("humo.png", 4)
+        self.eliminar()
+        self.corazon_roto = pilas.actores.Animacion(
+            pilas.imagenes.cargar_grilla("corazon_roto.png", 2),
+            velocidad=0.9, x=self.x, y=self.corazon.y
         )
-        self.right.imagen = (
-            pilas.imagenes.cargar_grilla("humo.png", 4)
+        self.humo = pilas.actores.Animacion(
+            pilas.imagenes.cargar_grilla("humo.png", 4), x=self.x, y=self.y
         )
 
     def eliminar(self):
-        self.corazon.eliminar()
-        self.left.eliminar()
-        self.right.eliminar()
+        try:
+            self.corazon.eliminar()
+            self.left.eliminar()
+            self.right.eliminar()
+        except:
+            pass
+        try:
+            self.humo.eliminar()
+            self.corazon_roto.eliminar()
+        except:
+            pass
 
     @property
     def x(self):
-        self.corazon.x = x
-        self.left.x = x - 12
-        self.right.x = x + 12
+        return self.corazon.x
+
+    @x.setter
+    def x(self, v):
+        self.corazon.x = v
+        self.left.x = v - 10
+        self.right.x = v + 10
 
     @property
     def y(self):
-        self.corazon.y = y + 24
-        self.left.y = y
-        self.right.y = y
+        return self.left.y
+
+    @y.setter
+    def y(self, v):
+        self.corazon.y = v + 24
+        self.left.y = v
+        self.right.y = v
 
 
 
