@@ -103,7 +103,8 @@ class Menu(pilas.escena.Base):
                                         ("About", self.about),
                                         ("Full Screen?", self.full_screen),
                                         ("Exit", self.salir_del_juego),
-                                        ("Encuentro", self.test_encuentro)])
+                                        ("Encuentro", self.test_encuentro)],
+                                        fuente="visitor1.ttf")
 
     def test_encuentro(self):
         self.musicamenu.pausar()
