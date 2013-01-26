@@ -29,7 +29,19 @@ class Viejo(pilas.actores.Calvo):
 
     def __init__(self, *args, **kwargs):
         super(Viejo, self).__init__(*args, **kwargs)
+        self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
+        self._pensar = pilas.imagenes.cargar("pensar.png")
+        pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
+
+    def malondiar(self):
+        self.globo = pilas.actores.Actor(self._pensar)
+        self.globo.aprender(pilas.habilidades.Imitar, self)
+        pilas.mundo.agregar_tarea(2, self.dejar_de_malondiar)
+
+    def dejar_de_malondiar(self):
+        self.globo.eliminar()
+        pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2
