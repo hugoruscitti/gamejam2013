@@ -30,7 +30,6 @@ class Viejo(pilas.actores.Calvo):
     def __init__(self, *args, **kwargs):
         super(Viejo, self).__init__(*args, **kwargs)
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
-        #self.aprender(habilidades.SeMantieneEnPantalla)
 
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2
@@ -50,6 +49,10 @@ class Viejo(pilas.actores.Calvo):
 #===============================================================================
 
 class Pareja(object):
+
+    FOTOS = ["pareja_chetos.png",
+             "pareja_punks.png",
+             "pareja_religiosos.png"]
 
     def __init__(self, x, y):
         self.velocidad = float("0.{}".format(random.randint(7, 9)))
@@ -75,7 +78,7 @@ class Pareja(object):
             pilas.imagenes.cargar_grilla("corazon.png", 2),
             True, velocidad=0.9
         )
-
+        self.imagen = pilas.imagenes.cargar(random.choice(FOTOS))
         self.right.espejado = True
         self.x, self.y = x, y
 
