@@ -1,6 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# License: GPL 3
+# Córdoba Game Jam 2013
+# Abrutsky - Bravo - Cabral - Ruscitti - Taira
+
+
+#===============================================================================
+# DOC
+#===============================================================================
+
+"""Escenas para el juego"""
+
+
+#===============================================================================
+# IMPORTS
+#===============================================================================
+
 import pilas
 
 
@@ -36,9 +52,7 @@ class Logos(pilas.escena.Normal):
 class Menu(pilas.escena.Base):
 
     def iniciar(self):
-        pilas.fondos.Fondo("fondo_menu")
-        else:
-            pilas.fondos.Selva()
+        pilas.fondos.Fondo("menu.png")
 
         def iniciar_juego():
             pilas.cambiar_escena(Juego())
@@ -46,16 +60,27 @@ class Menu(pilas.escena.Base):
         def salir_del_juego():
             pilas.terminar()
 
-        if self.mensaje:
-            self.title = pilas.actores.Texto(self.mensaje)
-            self.title.escala = 2
-            self.title.y = 100
-
-        self.menu = pilas.actores.Menu([('Jugar', iniciar_juego),
-                                        ('Salir', salir_del_juego)])
+        self.menu = pilas.actores.Menu([("Let's Break Some Hearts", iniciar_juego),
+                                        ('Exit', salir_del_juego)])
 
 
-pilas.iniciar()
-l=Logos()
-pilas.cambiar_escena(l)
-pilas.ejecutar()
+
+#===============================================================================
+# JUEGO
+#===============================================================================
+
+class Juego(pilas.escena.Base):
+
+    def iniciar(self):
+        mapa = pilas.actores.Mapa()
+        viejo = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
+        c = pilas.actores.Calvo(mapa)
+        c.imagen = viejo
+
+
+#===============================================================================
+# MAIN
+#===============================================================================
+
+if __name__ == "__main__":
+    print(__doc__)

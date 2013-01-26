@@ -1,8 +1,41 @@
-import pilas
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-pilas.iniciar()
-mapa = pilas.actores.Mapa()
+# License: GPL 3
+# Córdoba Game Jam 2013
+# Abrutsky - Bravo - Cabral - Ruscitti - Taira
 
-c = pilas.actores.Calvo(mapa)
 
-pilas.ejecutar()
+#===============================================================================
+# DOC
+#===============================================================================
+
+"""Escenas para el juego"""
+
+
+#===============================================================================
+# IMPORTS
+#===============================================================================
+
+import pilas #; pilas.iniciar()
+
+import escenas
+
+
+#===============================================================================
+# MAIN
+#===============================================================================
+
+def main():
+    pilas.iniciar()
+    pilas.cambiar_escena(escenas.Logos())
+    pilas.ejecutar()
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
