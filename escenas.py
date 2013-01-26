@@ -58,12 +58,12 @@ class Logos(pilas.escena.Normal):
         else:
             pilas.cambiar_escena(Menu())
 
+
 #===============================================================================
 # ABOUT
 #===============================================================================
 
 class About(pilas.escena.Base):
-
 
     def iniciar(self):
         pilas.fondos.Fondo(imagen=pilas.imagenes.cargar_imagen("about.png"))
@@ -104,11 +104,11 @@ class Menu(pilas.escena.Base):
                                         ("Full Screen?", self.full_screen),
                                         ("Exit", self.salir_del_juego),
                                         ("Encuentro", self.test_encuentro)])
-                                        
+
     def test_encuentro(self):
         self.musicamenu.pausar()
         pilas.almacenar_escena(Encuentro())
-    
+
     def reanudar(self):
         self.musicamenu.continuar()
 
@@ -116,8 +116,6 @@ class Menu(pilas.escena.Base):
         self.musicamenu.reproducir()
         pilas.fondos.Fondo("menu.png")
         pilas.mundo.agregar_tarea(1.5, self.mostrar_menu)
-
-
 
 
 #===============================================================================
@@ -135,7 +133,12 @@ class Juego(pilas.escena.Base):
                 x = -x
             if random.randint(0, 1):
                 y = -y
-            valid = not self.mapa.es_punto_solido(x, y)
+            try:
+                if not self.mapa.es_punto_solido(x, y) \
+                and self.viejo.distancia_al_punto(x, y) > 20:
+                    valid = True
+            except:
+                pass
         return x, y
 
     def centrar_camara(self, evt):
@@ -155,6 +158,7 @@ class Juego(pilas.escena.Base):
         except:
             pass
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
+        self.mapa.z = self.mapa.alto + 10
         self.viejo = actores.Viejo(self.mapa)
         self.actualizar.conectar(self.centrar_camara)
 
@@ -200,12 +204,12 @@ class Encuentro(pilas.escena.Base):
         pareja.escala = [1]
         pareja.y = 100
         self.barra = Barra(self.items)
-    
+
     def salir(self):
         import escenas
         self.sonidocorazon.detener()
         pilas.recuperar_escena()
-        
+
 
 #===============================================================================
 # MAIN

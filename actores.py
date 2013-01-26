@@ -42,6 +42,7 @@ class Viejo(pilas.actores.Calvo):
             self.y = topy
         elif self.x < -topx:
             self.y = -topy
+        self.z = self.y
 
 
 #===============================================================================
@@ -78,19 +79,25 @@ class Pareja(object):
             pilas.imagenes.cargar_grilla("corazon.png", 2),
             True, velocidad=0.9
         )
-        self.imagen = pilas.imagenes.cargar(random.choice(FOTOS))
+        self.imagen = pilas.imagenes.cargar(random.choice(self.FOTOS))
         self.right.espejado = True
+        self.right.centro = ("centro", "abajo")
+        self.left.centro = ("centro", "abajo")
+        self.corazon.centro = ("centro", "abajo")
         self.x, self.y = x, y
 
     def romper_pareja(self):
         self.eliminar()
         self.corazon_roto = pilas.actores.Animacion(
-            pilas.imagenes.cargar_grilla("corazon_roto.png", 2),
-            velocidad=0.9, x=self.x, y=self.corazon.y
+            pilas.imagenes.cargar_grilla("corazon_roto.png", 2), velocidad=0.9
         )
+        self.corazon_roto.centro = ("centro", "abajo")
+        self.corazon_roto.x, self.corazon_roto.y = self.x, self.corazon.y
         self.humo = pilas.actores.Animacion(
-            pilas.imagenes.cargar_grilla("humo.png", 4), x=self.x, y=self.y
+            pilas.imagenes.cargar_grilla("humo.png", 4)
         )
+        self.humo.x, self.humo.y = self.x, self.y
+        self.humo.centro = ("centro", "abajo")
 
     def eliminar(self):
         try:
@@ -121,10 +128,11 @@ class Pareja(object):
 
     @y.setter
     def y(self, v):
-        self.corazon.y = v + 24
+        self.corazon.y = v + 35
         self.left.y = v
         self.right.y = v
-
+        self.left.z = v
+        self.right.z = v
 
 
 
