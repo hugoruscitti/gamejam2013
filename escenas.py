@@ -81,9 +81,11 @@ class Menu(pilas.escena.Base):
 class Juego(pilas.escena.Base):
 
     def centrar_camara(self):
-        if self.mapa.ancho / 2 - abs(self.viejo.x) > 320 :
+        medio_ancho = pilas.mundo.motor.ancho_original / 2
+        medio_alto = pilas.mundo.motor.alto_original / 2
+        if self.mapa.ancho / 2 - abs(self.viejo.x) > medio_ancho :
             self.camara.x = [self.viejo.x]
-        if self.mapa.alto / 2 - abs(self.viejo.y) > 240 :
+        if self.mapa.alto / 2 - abs(self.viejo.y) > medio_alto :
             self.camara.y = [self.viejo.y]
 
     def iniciar(self):
