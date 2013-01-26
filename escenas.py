@@ -79,11 +79,15 @@ class Menu(pilas.escena.Base):
 
 class Juego(pilas.escena.Base):
 
+    def centrar_camara(self):
+        camara.x = [c.x]
+        camara.y = [c.y]
+           
     def iniciar(self):
-        mapa = pilas.actores.Mapa()
-        viejo = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
-        c = pilas.actores.Calvo(mapa)
-        c.imagen = viejo
+        self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
+        self.viejo = pilas.actores.Calvo(self.mapa)
+        self.viejo.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
+        pilas.mundo.agregar_tarea_siempre(2, self.centrar_camara)
 
 
 #===============================================================================
