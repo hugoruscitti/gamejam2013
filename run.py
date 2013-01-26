@@ -17,7 +17,7 @@
 # IMPORTS
 #===============================================================================
 
-import pilas #; pilas.iniciar()
+import pilas
 
 import escenas
 

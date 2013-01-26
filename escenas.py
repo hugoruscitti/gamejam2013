@@ -38,11 +38,15 @@ class Logos(pilas.escena.Normal):
 
     def iniciar(self):
         pilas.fondos.Fondo(imagen=self._logo)
+        pilas.mundo.agregar_tarea(2, self.siguiente)
+        self.pulsa_tecla.conectar(self.siguiente)
+        self.click_de_mouse.conectar(self.siguiente)
+
+    def siguiente(self, *args, **kwargs):
         if self._logos_futuros:
-            pilas.mundo.agregar_tarea(2, pilas.cambiar_escena,
-                                      Logos(*self._logos_futuros))
+            pilas.cambiar_escena(Logos(*self._logos_futuros))
         else:
-            pilas.mundo.agregar_tarea(2, pilas.cambiar_escena, Menu())
+            pilas.cambiar_escena(Menu())
 
 
 #===============================================================================
@@ -57,10 +61,14 @@ class Menu(pilas.escena.Base):
         def iniciar_juego():
             pilas.cambiar_escena(Juego())
 
+        def about():
+            pass
+
         def salir_del_juego():
             pilas.terminar()
 
         self.menu = pilas.actores.Menu([("Let's Break Some Hearts", iniciar_juego),
+                                        ("About", about),
                                         ('Exit', salir_del_juego)])
 
 
