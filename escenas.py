@@ -89,12 +89,14 @@ class Menu(pilas.escena.Base):
 
 class Juego(pilas.escena.Base):
 
-    def centrar_camara(self):
-        medio_ancho = pilas.mundo.motor.ancho_original / 2
-        medio_alto = pilas.mundo.motor.alto_original / 2
-        if self.mapa.ancho / 2 - abs(self.viejo.x) > medio_ancho :
+    def centrar_camara(self, evt):
+        mm_ancho = self.mapa.ancho / 2
+        mm_alto = self.mapa.alto / 2
+        mp_ancho = pilas.mundo.motor.ancho_original / 2
+        mp_alto = pilas.mundo.motor.alto_original / 2
+        if abs(self.viejo.x) < mm_ancho - mp_ancho:
             self.camara.x = [self.viejo.x]
-        if self.mapa.alto / 2 - abs(self.viejo.y) > medio_alto :
+        if abs(self.viejo.y) < mm_alto - mp_alto:
             self.camara.y = [self.viejo.y]
 
     def iniciar(self):
@@ -105,7 +107,7 @@ class Juego(pilas.escena.Base):
             pass
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
         self.viejo = actores.Viejo(self.mapa)
-        pilas.mundo.agregar_tarea_siempre(2, self.centrar_camara)
+        self.actualizar.conectar(self.centrar_camara)
 
 
 #===============================================================================

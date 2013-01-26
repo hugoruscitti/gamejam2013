@@ -21,9 +21,8 @@ import random
 
 import pilas
 
-
 #===============================================================================
-# El Viejo
+# EL VIEJO
 #===============================================================================
 
 class Viejo(pilas.actores.Calvo):
@@ -32,6 +31,18 @@ class Viejo(pilas.actores.Calvo):
         super(Viejo, self).__init__(*args, **kwargs)
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         #self.aprender(habilidades.SeMantieneEnPantalla)
+
+    def actualizar(self):
+        topy = self.mapa.imagen.alto() / 2
+        topx = self.mapa.imagen.ancho() / 2
+        if self.x > topx:
+            self.x = topx
+        elif self.x < -topx:
+            self.x = -topx
+        if self.y > topy:
+            self.y = topy
+        elif self.x < -topx:
+            self.y = -topy
 
 
 #===============================================================================
