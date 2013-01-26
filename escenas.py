@@ -58,6 +58,21 @@ class Logos(pilas.escena.Normal):
         else:
             pilas.cambiar_escena(Menu())
 
+#===============================================================================
+# ABOUT
+#===============================================================================
+
+class About(pilas.escena.Base):
+
+
+    def iniciar(self):
+        pilas.fondos.Fondo(imagen=pilas.imagenes.cargar_imagen("about.png"))
+        self.pulsa_tecla.conectar(self.volver_al_menu)
+        self.click_de_mouse.conectar(self.volver_al_menu)
+
+    def volver_al_menu(self, evt):
+        pilas.recuperar_escena()
+
 
 #===============================================================================
 # MENU PRINCIPAL
@@ -66,13 +81,13 @@ class Logos(pilas.escena.Normal):
 class Menu(pilas.escena.Base):
 
     def juego(self):
-        try:
-            self.musicamenu.detener()
-        except:
-            pass
+        self.musicamenu.detener()
         pilas.cambiar_escena(Juego())
 
     def about(self):
+        pilas.almacenar_escena(About())
+
+    def full_screen(self):
         pass
 
     def salir_del_juego(self):
@@ -81,15 +96,13 @@ class Menu(pilas.escena.Base):
 
     def mostrar_menu(self):
         self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
-                                            ("About", self.about),
-                                            ('Exit', self.salir_del_juego)])
+                                        ("About", self.about),
+                                        ("Full Screen?", self.full_screen),
+                                        ('Exit', self.salir_del_juego)])
 
     def iniciar(self):
-        try:
-            self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
-            self.musicamenu.reproducir()
-        except:
-            pass
+        self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
+        self.musicamenu.reproducir()
         pilas.fondos.Fondo("menu.png")
         pilas.mundo.agregar_tarea(1.5, self.mostrar_menu)
 

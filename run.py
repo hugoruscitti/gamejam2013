@@ -27,7 +27,7 @@ import escenas
 #===============================================================================
 
 def main():
-    pilas.iniciar()
+    pilas.iniciar(titulo="MalOndon!!!")
     pilas.cambiar_escena(escenas.Logos())
     pilas.ejecutar()
 
