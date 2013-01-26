@@ -99,7 +99,7 @@ class Juego(pilas.escena.Base):
 
     def iniciar(self):
         try:
-            self.musicaprincipal = pilas.sonidos.cargar("musicaprincipal.mp3")
+            self.musicaprincipal = pilas.sonidos.cargar("musicajuego.mp3")
             self.musicaprincipal.reproducir()
         except:
             pass
