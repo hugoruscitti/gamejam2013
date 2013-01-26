@@ -116,12 +116,15 @@ class Menu(pilas.escena.Base):
 class Juego(pilas.escena.Base):
 
     def random_xy(self):
-        x = (random.randint(0, self.mapa.ancho) / 2) + 10
-        y = (random.randint(0, self.mapa.alto) / 2) + 10
-        if random.randint(0, 1):
-            x = -x
-        if random.randint(0, 1):
-            y = -y
+        valid = False
+        while not valid:
+            x = (random.randint(0, self.mapa.ancho) / 2) + 10
+            y = (random.randint(0, self.mapa.alto) / 2) + 10
+            if random.randint(0, 1):
+                x = -x
+            if random.randint(0, 1):
+                y = -y
+            valid = not self.mapa.es_punto_solido(x, y)
         return x, y
 
     def centrar_camara(self, evt):
