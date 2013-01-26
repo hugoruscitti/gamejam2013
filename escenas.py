@@ -99,14 +99,47 @@ class Juego(pilas.escena.Base):
 
     def iniciar(self):
         try:
-            self.musicaprincipal = pilas.sonidos.cargar("musicajuego.mp3")
-            self.musicaprincipal.reproducir()
+            self.musicajuego = pilas.sonidos.cargar("musicajuego.mp3")
+            self.musicajuego.reproducir()
         except:
             pass
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
         self.viejo = actores.Viejo(self.mapa)
         pilas.mundo.agregar_tarea_siempre(2, self.centrar_camara)
 
+#===============================================================================
+# ENCUENTRO
+#===============================================================================
+class Barra():
+    
+    def __init__(self, items):
+        for i,item in enumerate(items):
+            actor = pilas.actores.Actor(item)
+            actor.x = -205 + (i * 50)
+            actor.y = -195
+    
+class Encuentro(pilas.escena.Base):
+
+    def __init__(self, pareja="parejatest.jpg", items=["itemtest.png", "itemtest.png", "itemtest.png"]):
+        pilas.escena.Base.__init__(self)
+        self.pareja = pareja
+        self.items = items
+        
+    def iniciar(self):
+        try:
+            # bajar volumen musicajuego: self.musicajuego.bajarVolumen(10%)
+            # reproducir latido corazon
+            
+            pass
+        except:
+            pass
+            
+        pilas.fondos.Fondo("fondoencuentro.png")
+        pareja = pilas.actores.Actor(self.pareja)
+        pareja.escala = 0.8
+        pareja.escala = [1]
+        pareja.y = 100
+        self.barra = Barra(self.items)
 
 #===============================================================================
 # MAIN
