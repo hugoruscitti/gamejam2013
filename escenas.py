@@ -80,6 +80,10 @@ class About(pilas.escena.Base):
 
 class Menu(pilas.escena.Base):
 
+    def __init__(self):
+        pilas.escena.Base.__init__(self)
+        self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
+
     def juego(self):
         self.musicamenu.detener()
         pilas.cambiar_escena(Juego())
@@ -98,10 +102,17 @@ class Menu(pilas.escena.Base):
         self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
                                         ("About", self.about),
                                         ("Full Screen?", self.full_screen),
-                                        ('Exit', self.salir_del_juego)])
+                                        ("Exit", self.salir_del_juego),
+                                        ("Encuentro", self.test_encuentro)])
+                                        
+    def test_encuentro(self):
+        self.musicamenu.pausar()
+        pilas.almacenar_escena(Encuentro())
+    
+    def reanudar(self):
+        self.musicamenu.continuar()
 
     def iniciar(self):
-        self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
         self.musicamenu.reproducir()
         pilas.fondos.Fondo("menu.png")
         pilas.mundo.agregar_tarea(1.5, self.mostrar_menu)
@@ -166,14 +177,17 @@ class Barra():
 
 class Encuentro(pilas.escena.Base):
 
-    def __init__(self, pareja="parejatest.jpg", items=["itemtest.png", "itemtest.png", "itemtest.png"]):
+    def __init__(self, pareja="parejatest.jpg",
+                 items=["itemtest.png", "itemtest.png", "itemtest.png"]):
         pilas.escena.Base.__init__(self)
         self.pareja = pareja
         self.items = items
 
     def iniciar(self):
         try:
-            # bajar volumen musicajuego: self.musicajuego.bajarVolumen(10%)
+            self.sonidocorazon = pilas.sonidos.cargar("musicajuego.mp3")
+            self.sonidocorazon.reproducir()
+            pilas.mundo.agregar_tarea(1, self.salir)
             # reproducir latido corazon
 
             pass
@@ -186,6 +200,12 @@ class Encuentro(pilas.escena.Base):
         pareja.escala = [1]
         pareja.y = 100
         self.barra = Barra(self.items)
+    
+    def salir(self):
+        import escenas
+        self.sonidocorazon.detener()
+        pilas.recuperar_escena()
+        
 
 #===============================================================================
 # MAIN
