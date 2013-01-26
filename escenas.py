@@ -19,6 +19,8 @@
 
 import pilas
 
+import actores
+
 
 #===============================================================================
 # LOGOS INICIALES
@@ -55,21 +57,20 @@ class Logos(pilas.escena.Normal):
 
 class Menu(pilas.escena.Base):
 
+    def juego(self):
+        pilas.cambiar_escena(Juego())
+
+    def about(self):
+        pass
+
+    def salir_del_juego(self):
+        pilas.terminar()
+
     def iniciar(self):
         pilas.fondos.Fondo("menu.png")
-
-        def iniciar_juego():
-            pilas.cambiar_escena(Juego())
-
-        def about():
-            pass
-
-        def salir_del_juego():
-            pilas.terminar()
-
-        self.menu = pilas.actores.Menu([("Let's Break Some Hearts", iniciar_juego),
-                                        ("About", about),
-                                        ('Exit', salir_del_juego)])
+        self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
+                                        ("About", self.about),
+                                        ('Exit', self.salir_del_juego)])
 
 
 
@@ -80,13 +81,12 @@ class Menu(pilas.escena.Base):
 class Juego(pilas.escena.Base):
 
     def centrar_camara(self):
-        camara.x = [c.x]
-        camara.y = [c.y]
-           
+        self.camara.x = [self.viejo.x]
+        self.camara.y = [self.viejo.y]
+
     def iniciar(self):
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
-        self.viejo = pilas.actores.Calvo(self.mapa)
-        self.viejo.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
+        self.viejo = actores.Viejo(self.mapa)
         pilas.mundo.agregar_tarea_siempre(2, self.centrar_camara)
 
 
