@@ -58,6 +58,10 @@ class Logos(pilas.escena.Normal):
 class Menu(pilas.escena.Base):
 
     def juego(self):
+        try:
+            self.musicamenu.detener()
+        except:
+            pass
         pilas.cambiar_escena(Juego())
 
     def about(self):
@@ -67,6 +71,11 @@ class Menu(pilas.escena.Base):
         pilas.terminar()
 
     def iniciar(self):
+        try:
+            self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
+            self.musicamenu.reproducir()
+        except:
+            pass
         pilas.fondos.Fondo("menu.png")
         self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
                                         ("About", self.about),
@@ -87,10 +96,15 @@ class Juego(pilas.escena.Base):
             self.camara.y = [self.viejo.y]
 
     def iniciar(self):
+        try:
+            self.musicaprincipal = pilas.sonidos.cargar("musicaprincipal.mp3")
+            self.musicaprincipal.reproducir()
+        except:
+            pass
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
         self.viejo = actores.Viejo(self.mapa)
         pilas.mundo.agregar_tarea_siempre(2, self.centrar_camara)
-
+        
 
 #===============================================================================
 # MAIN
