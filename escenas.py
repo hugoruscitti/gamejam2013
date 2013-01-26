@@ -81,8 +81,10 @@ class Menu(pilas.escena.Base):
 class Juego(pilas.escena.Base):
 
     def centrar_camara(self):
-        self.camara.x = [self.viejo.x]
-        self.camara.y = [self.viejo.y]
+        if self.mapa.ancho / 2 - abs(self.viejo.x) > 320 :
+            self.camara.x = [self.viejo.x]
+        if self.mapa.alto / 2 - abs(self.viejo.y) > 240 :
+            self.camara.y = [self.viejo.y]
 
     def iniciar(self):
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
