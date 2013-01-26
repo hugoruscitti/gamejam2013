@@ -78,6 +78,12 @@ class Menu(pilas.escena.Base):
     def salir_del_juego(self):
         pilas.terminar()
 
+
+    def mostrar_menu(self):
+        self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
+                                            ("About", self.about),
+                                            ('Exit', self.salir_del_juego)])
+
     def iniciar(self):
         try:
             self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
@@ -85,9 +91,8 @@ class Menu(pilas.escena.Base):
         except:
             pass
         pilas.fondos.Fondo("menu.png")
-        self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
-                                        ("About", self.about),
-                                        ('Exit', self.salir_del_juego)])
+        pilas.mundo.agregar_tarea(1.5, self.mostrar_menu)
+
 
 
 
