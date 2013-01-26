@@ -111,6 +111,10 @@ class Pareja(object):
         self.humo.x, self.humo.y = self.x, self.y
         self.humo.centro = ("centro", "abajo")
 
+    def entregar_item(self, item):
+        # TODO: verificar si el item destruye o no
+        self.romper_pareja()
+        
     def eliminar(self):
         try:
             self.corazon.eliminar()
