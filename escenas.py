@@ -104,8 +104,7 @@ class Menu(pilas.escena.Base):
         self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
                                         ("About", self.about),
                                         ("Full Screen?", self.full_screen),
-                                        ("Exit", self.salir_del_juego),
-                                        ("Encuentro", self.test_encuentro)],
+                                        ("Exit", self.salir_del_juego)],
                                         fuente="visitor1.ttf")
 
     def test_encuentro(self):
