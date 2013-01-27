@@ -168,6 +168,7 @@ class Juego(pilas.escena.Base):
         self.mapa.z = self.mapa.alto + 10
         self.viejo = actores.Viejo(self.mapa, x=-20, y=20)
         self.actualizar.conectar(self.centrar_camara)
+        pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
 
         # Crear parejas
         self.parejas = {}
@@ -202,6 +203,11 @@ class Juego(pilas.escena.Base):
 
         # Vinculamos las colisiones
         self.vincular_colisiones()
+
+    def regresar_al_menu(self, evento):
+        pilas.escena_actual().camara.x = 0
+        pilas.escena_actual().camara.y = 0
+        pilas.cambiar_escena(Menu())
 
     def reanudar(self):
         self.camara.x, self.camara.y = self.viejo.x, self.viejo.y
