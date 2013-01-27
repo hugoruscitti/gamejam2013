@@ -30,6 +30,7 @@ class Viejo(pilas.actores.Calvo):
     def __init__(self, *args, **kwargs):
         super(Viejo, self).__init__(*args, **kwargs)
         self.x = self.x - 50
+        self.radio_de_colision = 40
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
@@ -96,7 +97,8 @@ class Pareja(object):
         self.right.centro = ("centro", "abajo")
         self.left.centro = ("centro", "abajo")
         self.corazon.centro = ("centro", "abajo")
-        self.x, self.y = x, y
+        self.x, self.y, self.z = x, y, 10
+        self.radio_de_colision = 70
 
     def romper_pareja(self):
         self.eliminar()

@@ -23,6 +23,8 @@ import pilas
 
 import actores
 
+import escenas
+
 #===============================================================================
 # CANTIDAD PAREJAS
 #===============================================================================
@@ -160,12 +162,20 @@ class Juego(pilas.escena.Base):
         self.mapa.z = self.mapa.alto + 10
         self.viejo = actores.Viejo(self.mapa)
         self.actualizar.conectar(self.centrar_camara)
-
+        lista_pareja = []
+        
         # CREAR PAREJAS
         for x in range(CANTIDAD_PAREJAS):
             x, y = self.random_xy()
-            pareja = actores.Pareja(x, y)
+            lista_pareja.append(actores.Pareja(x, y).left)
 
+        pilas.escena_actual().colisiones.agregar(self.viejo, lista_pareja, 
+                                        self.ir_a_encuentro)
+
+    def ir_a_encuentro(self, viejo, pareja):
+        self.musicajuego.pausar()
+        pilas.almacenar_escena(Encuentro(pareja))
+        
 
 #===============================================================================
 # ENCUENTRO
@@ -175,17 +185,18 @@ class Item(pilas.actores.Actor):
     
 class Barra():
 
-    def __init__(self, items):
+    def __init__(self, encuentro, items):
         for i,item in enumerate(items):
             actor = Item(item)
             actor.x = -205 + (i * 50)
             actor.y = -195
         pilas.eventos.click_de_mouse.conectar(self.click_de_mouse)
+        self.encuentro = encuentro
     
     def click_de_mouse(self, evento):
-        actor_actual = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
-        if isinstance(actor_actual, Item):
-            print pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
+        item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
+        if isinstance(item, Item):
+            self.encuentro.entregar_item(item)
 
 class Encuentro(pilas.escena.Base):
 
@@ -197,9 +208,9 @@ class Encuentro(pilas.escena.Base):
 
     def iniciar(self):
         try:
-            self.sonidocorazon = pilas.sonidos.cargar("musicajuego.mp3")
+            # TODO: sonido corazon
+            self.sonidocorazon = pilas.sonidos.cargar("musicamenu.mp3")
             self.sonidocorazon.reproducir()
-            # pilas.mundo.agregar_tarea(1, self.salir)
 
             pass
         except:
@@ -210,13 +221,15 @@ class Encuentro(pilas.escena.Base):
         fotopareja.escala = 0.8
         fotopareja.escala = [1]
         fotopareja.y = 100
-        self.barra = Barra(self.items)
+        self.barra = Barra(self, self.items)
 
     def salir(self):
-        import escenas
         self.sonidocorazon.detener()
         pilas.recuperar_escena()
 
+    def entregar_item(self, item):
+        self.pareja.entregar_item(item)
+        self.salir()
 
 #===============================================================================
 # MAIN
