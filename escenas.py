@@ -201,6 +201,22 @@ class Juego(pilas.escena.Base):
         self.timer.ajustar(TIEMPO_DE_JUEGO, self.youlose)
         self.timer.iniciar()
 
+        # Contador de parejas rotas
+        self.corazon_roto = pilas.actores.Animacion(
+            pilas.imagenes.cargar_grilla("corazon_roto.png", 2), True,
+            velocidad=0.9, x=110, y=-210
+        )
+        self.corazon_roto.fijo = True
+        self.corazon_roto.z = -20000
+        self.contador = pilas.actores.Texto(
+            str(CANTIDAD_PAREJAS - len(self.parejas)),
+            fuente="visitor1.ttf",
+            x=130, y=-205
+        )
+        self.contador.color = pilas.colores.rojo
+        self.contador.fijo = True
+        self.contador.z = -20000
+
         # Vinculamos las colisiones
         self.vincular_colisiones()
 
@@ -217,6 +233,7 @@ class Juego(pilas.escena.Base):
                 pareja.romper_pareja()
                 self.parejas.pop(k)
         self.vincular_colisiones()
+        self.contador.texto = str(CANTIDAD_PAREJAS - len(self.parejas))
         if not self.parejas:
             self.camara.x, self.camara.y = 0, 0
             pilas.cambiar_escena(
