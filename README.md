@@ -1,6 +1,7 @@
 gamejam2013
 ===========
 
+<img src='https://raw.github.com/hugoruscitti/gamejam2013/master/screenshot.png'>
 
 Install
 -------
