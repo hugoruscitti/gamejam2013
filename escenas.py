@@ -167,7 +167,7 @@ class Juego(pilas.escena.Base):
         for x in range(CANTIDAD_PAREJAS):
             x, y = self.random_xy()
             pareja = actores.Pareja(x, y)
-            self.parejas[pareja.left] = pareja
+            self.parejas[pareja.as_actor] = pareja
             x, y = self.random_xy()
             item = actores.Item(imagen=pareja.nombre_imagen_item, x=x, y=y)
             self.lista_items.append(item)
@@ -179,10 +179,16 @@ class Juego(pilas.escena.Base):
         pilas.escena_actual().colisiones.agregar(self.viejo,
                                                  self.parejas.keys(),
                                                  self.ir_a_encuentro)
+        pilas.escena_actual().colisiones.agregar(self.viejo,
+                                                 self.lista_items,
+                                                 self.encontrar_items)
 
-    def ir_a_encuentro(self, viejo, p_left):
+    def encontrar_items(self, viejo, item):
+        print item
+
+    def ir_a_encuentro(self, viejo, act):
         self.musicajuego.pausar()
-        pareja = self.parejas[p_left]
+        pareja = self.parejas[act]
         pilas.almacenar_escena(Encuentro(pareja, viejo.items))
 
 

@@ -10,7 +10,7 @@
 # DOC
 #===============================================================================
 
-"""Escenas para el juego"""
+"""Lanzador del juego Malondon"""
 
 
 #===============================================================================
@@ -28,7 +28,7 @@ import escenas
 
 def main():
     pilas.iniciar(titulo="MalOndon")
-    pilas.cambiar_escena(escenas.Logos())
+    pilas.cambiar_escena(escenas.Juego())
     pilas.ejecutar()
 
 if __name__ == "__main__":

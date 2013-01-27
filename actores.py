@@ -42,10 +42,9 @@ class Viejo(pilas.actores.Calvo):
     def __init__(self, *args, **kwargs):
         super(Viejo, self).__init__(*args, **kwargs)
         self.x = self.x - 50
-        self.radio_de_colision = 40
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
-        self.items = [Item(imagen="choripan.png",x=20,y=20)]
+        self.items = []
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
@@ -102,14 +101,17 @@ class Pareja(object):
             pilas.imagenes.cargar_grilla("corazon.png", 2),
             True, velocidad=0.9
         )
+        self._actor = pilas.actores.Actor(imagen="invisible.png")
+
         self.nombre_imagen = random.choice(PAREJAS_X_ITEMS.keys())
         self.imagen = pilas.imagenes.cargar(self.nombre_imagen)
         self.right.espejado = True
         self.right.centro = ("centro", "abajo")
         self.left.centro = ("centro", "abajo")
         self.corazon.centro = ("centro", "abajo")
-        self.x, self.y, self.z = x, y, 10
-        self.radio_de_colision = 70
+        self._actor.centro = ("centro", "abajo")
+        self._actor.radio_de_colision = 25
+        self.x, self.y = x, y
 
     def romper_pareja(self):
         self.eliminar()
@@ -143,25 +145,36 @@ class Pareja(object):
 
     @property
     def x(self):
-        return self.corazon.x
+        return self._actor.x
 
     @x.setter
     def x(self, v):
         self.corazon.x = v
+        self._actor.x = v
         self.left.x = v - 10
         self.right.x = v + 10
 
     @property
     def y(self):
-        return self.left.y
+        return self._actor.y
 
     @y.setter
     def y(self, v):
         self.corazon.y = v + 35
+        self._actor.y = v + 20
         self.left.y = v
         self.right.y = v
         self.left.z = v
         self.right.z = v
+        self._actor.z = v
+
+    @property
+    def as_actor(self):
+        return self._actor
+
+    @property
+    def z(self):
+        return self._actor.z
 
     @property
     def nombre_imagen_item(self):
