@@ -18,12 +18,9 @@
 #===============================================================================
 
 import random
-
 import pilas
-
 import actores
 
-import escenas
 
 #===============================================================================
 # CANTIDAD PAREJAS
@@ -94,11 +91,10 @@ class Menu(pilas.escena.Base):
         pilas.almacenar_escena(About())
 
     def full_screen(self):
-        pass
+        pilas.mundo.motor.canvas.alternar_pantalla_completa()
 
     def salir_del_juego(self):
         pilas.terminar()
-
 
     def mostrar_menu(self):
         self.menu = pilas.actores.Menu([("Let's Break Some Hearts", self.juego),
