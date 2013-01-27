@@ -47,14 +47,11 @@ class Viejo(pilas.actores.Calvo):
         self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
-        
-        items = [Item(imagen="choripan.png",fijo=True,x=20,y=20),
-                      Item(imagen="alianzas.png",fijo=True,x=50,y=20),
-                      Item(imagen="consolador.png",fijo=True,x=80,y=20),
-                      Item(imagen="culo.png",fijo=True,x=110,y=20)]
+
+        items = []
         self.barra = Barra(items)
         # TODO: El viejo ya tiene los 4 items recolectados
-        
+
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
@@ -67,9 +64,12 @@ class Viejo(pilas.actores.Calvo):
         self.globo.eliminar()
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
-    def agarrar_item(item):
+    def agarrar_item(self, item):
+        print "Intentando agarrar el item"
+        item.eliminar()
+        self.barra.insertar_item(item)
         pass
-        
+
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2
         topx = self.mapa.imagen.ancho() / 2
@@ -222,9 +222,11 @@ class Barra(pilas.actores.Actor):
             item.x = -280 + (idx * 50)
             item.y = -210
             pilas.actores.utils.insertar_como_nuevo_actor(item)
-            
+            item.z = -20000
+
         pilas.eventos.click_de_mouse.conectar(self.click_de_mouse)
         self.fijo = True
+        self.z = -10000
 
     def click_de_mouse(self, evento):
         item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
@@ -232,6 +234,17 @@ class Barra(pilas.actores.Actor):
             #self.encuentro.entregar_item(item)
             # TODO: que la pareja recibe el item
             pass
+
+    def insertar_item(self, item):
+        if len(self.items) < 8:
+            self.items.append(item)
+            item.x = -280 -50 + len(self.items) * 50
+            item.y = -210
+            item.z = -20000
+            pilas.actores.utils.insertar_como_nuevo_actor(item)
+            item.fijo = True
+        else:
+            print "ERROR: no se pueden tomar mas de 8 items."
 
 #===============================================================================
 # MAIN

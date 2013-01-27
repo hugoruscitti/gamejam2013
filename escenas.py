@@ -186,7 +186,8 @@ class Juego(pilas.escena.Base):
         # Creamos el timer del juego
         self.timer = pilas.actores.Temporizador(
             x=(pilas.mundo.motor.ancho_original/2)-50,
-            y=(pilas.mundo.motor.alto_original/2)-10
+            y=(pilas.mundo.motor.alto_original/2)-10,
+            fuente="visitor1.ttf",
         )
         self.timer.ajustar(TIEMPO_DE_JUEGO, self.youlose)
         self.timer.iniciar()
