@@ -21,6 +21,7 @@ import random
 
 import pilas
 
+import escenas
 
 #===============================================================================
 # CONF
@@ -46,11 +47,14 @@ class Viejo(pilas.actores.Calvo):
         self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
-        self.items = [Item(imagen="choripan.png",x=20,y=20),
-                      Item(imagen="alianzas.png",x=50,y=20),
-                      Item(imagen="consolador.png",x=80,y=20),
-                      Item(imagen="culo.png",x=110,y=20)]
+        
+        items = [Item(imagen="choripan.png",fijo=True,x=20,y=20),
+                      Item(imagen="alianzas.png",fijo=True,x=50,y=20),
+                      Item(imagen="consolador.png",fijo=True,x=80,y=20),
+                      Item(imagen="culo.png",fijo=True,x=110,y=20)]
+        self.barra = Barra(items)
         # TODO: El viejo ya tiene los 4 items recolectados
+        
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
@@ -63,6 +67,9 @@ class Viejo(pilas.actores.Calvo):
         self.globo.eliminar()
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
+    def agarrar_item(item):
+        pass
+        
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2
         topx = self.mapa.imagen.ancho() / 2
@@ -194,31 +201,36 @@ class Pareja(object):
 
 class Item(pilas.actores.Actor):
 
-    def __init__(self, imagen, *args, **kwargs):
+    def __init__(self, imagen, fijo, *args, **kwargs):
         super(Item, self).__init__(imagen=imagen, *args, **kwargs)
         self.nombre_imagen = imagen
+        self.fijo = fijo
 
 
 #===============================================================================
 # Barra de items
 #===============================================================================
 
-class Barra(object):
+class Barra(pilas.actores.Actor):
 
-    def __init__(self, encuentro, items):
+    def __init__(self, items):
+        # TODO: unhack la posicion de la barra
+        pilas.actores.Actor.__init__(self, "barra.png", x=-110, y=-210)
+        self.items = items
         for idx, item in enumerate(items):
-            item.x = -205 + (idx * 50)
-            item.y = -195
-            print item.nombre_imagen
+            item.x = -280 + (idx * 50)
+            item.y = -210
+            pilas.actores.utils.insertar_como_nuevo_actor(item)
             
         pilas.eventos.click_de_mouse.conectar(self.click_de_mouse)
-        self.encuentro = encuentro
+        self.fijo = True
 
     def click_de_mouse(self, evento):
         item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
-        if isinstance(item, Item):
-            self.encuentro.entregar_item(item)
-
+        if isinstance(item, Item) and isinstance(pilas.escena_actual(), Encuentro):
+            #self.encuentro.entregar_item(item)
+            # TODO: que la pareja recibe el item
+            pass
 
 #===============================================================================
 # MAIN

@@ -160,7 +160,7 @@ class Juego(pilas.escena.Base):
         self.mapa.z = self.mapa.alto + 10
         self.viejo = actores.Viejo(self.mapa)
         self.actualizar.conectar(self.centrar_camara)
-
+           
         # CREAR PAREJAS
         self.parejas = {}
         self.lista_items = []
@@ -169,16 +169,16 @@ class Juego(pilas.escena.Base):
             pareja = actores.Pareja(x, y)
             self.parejas[pareja.as_actor] = pareja
             x, y = self.random_xy()
-            item = actores.Item(imagen=pareja.nombre_imagen_item, x=x, y=y)
+            item = actores.Item(imagen=pareja.nombre_imagen_item, fijo=False, x=x, y=y)
             self.lista_items.append(item)
 
         # agregamos todos los items que faltan mas la pistola
         x, y = self.random_xy()
-        self.lista_items.append(actores.Item(imagen=actores.PISTOLA, x=x, y=y))
+        self.lista_items.append(actores.Item(imagen=actores.PISTOLA, fijo=False, x=x, y=y))
         while len(self.lista_items) < CANTIDAD_ITEMS:
             x, y = self.random_xy()
             nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())
-            item = actores.Item(imagen=nombre_imagen, x=x, y=y)
+            item = actores.Item(imagen=nombre_imagen, fijo=False, x=x, y=y)
             self.lista_items.append(item)
         self.vincular_colisiones()
 
@@ -194,12 +194,12 @@ class Juego(pilas.escena.Base):
                                                  self.encontrar_items)
 
     def encontrar_items(self, viejo, item):
-        print item
+        viejo.agarrar_item(item)
 
     def ir_a_encuentro(self, viejo, act):
         self.musicajuego.pausar()
         pareja = self.parejas[act]
-        pilas.almacenar_escena(Encuentro(pareja, viejo.items, viejo))
+        pilas.almacenar_escena(Encuentro(pareja, viejo))
 
 
 #===============================================================================
@@ -208,10 +208,9 @@ class Juego(pilas.escena.Base):
 
 class Encuentro(pilas.escena.Base):
 
-    def __init__(self, pareja, items, viejo):
+    def __init__(self, pareja, viejo):
         pilas.escena.Base.__init__(self)
         self.pareja = pareja
-        self.items = items
         self.viejo = viejo
 
     def iniciar(self):
@@ -227,8 +226,10 @@ class Encuentro(pilas.escena.Base):
         fotopareja.escala = 0.8
         fotopareja.escala = [1]
         fotopareja.y = 100
-        self.barra = actores.Barra(self, self.items)
-        for item in self.items:
+        
+        # TODO: el redibujar,  meterlo en una funcion
+        pilas.actores.utils.insertar_como_nuevo_actor(self.viejo.barra)
+        for item in self.viejo.barra.items:
             pilas.actores.utils.insertar_como_nuevo_actor(item)
 
     def salir(self):
