@@ -83,6 +83,7 @@ class Menu(pilas.escena.Base):
         pilas.escena.Base.__init__(self)
         self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
 
+
     def juego(self):
         self.musicamenu.detener()
         pilas.cambiar_escena(Juego())
@@ -101,12 +102,14 @@ class Menu(pilas.escena.Base):
                                         ("About", self.about),
                                         ("Full Screen?", self.full_screen),
                                         ("Exit", self.salir_del_juego)],
-                                        fuente="visitor1.ttf")
+                                        fuente="visitor1.ttf",
+                                        y=-40)
 
-    def test_encuentro(self):
-        self.musicamenu.pausar()
-        pareja = actores.Pareja(20,20)
-        pilas.almacenar_escena(Encuentro(pareja))
+        self.p = pilas.actores.Pizarra(0, -120, 300, 200)
+        self.p.pintar(pilas.colores.negro)
+        self.p.transparencia = 40
+        self.p.z = 300
+        print self.p
 
     def reanudar(self):
         self.musicamenu.continuar()
