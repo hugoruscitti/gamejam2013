@@ -47,27 +47,25 @@ class Viejo(pilas.actores.Calvo):
         self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
-
         items = []
         self.barra = Barra(items)
-
+        self._roar = pilas.sonidos.cargar("roar.wav")
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
     def malondiar(self):
-        self.globo = pilas.actores.Actor(self._pensar)
+        self.globo = pilas.actores.Actor(self._pensar, x=self.x, y=self.y)
+        self._roar.reproducir()
+        self.globo.centro = ("centro", self.alto + 25)
         self.globo.aprender(pilas.habilidades.Imitar, self)
-        pilas.mundo.agregar_tarea(2, self.dejar_de_malondiar)
+        pilas.mundo.agregar_tarea(2.2, self.dejar_de_malondiar)
 
     def dejar_de_malondiar(self):
         self.globo.eliminar()
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
     def agarrar_item(self, item):
-        print "Intentando agarrar el item"
-        item.eliminar()
         self.barra.insertar_item(item)
-        pass
 
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2
@@ -205,6 +203,7 @@ class Item(pilas.actores.Actor):
         super(Item, self).__init__(imagen=imagen, *args, **kwargs)
         self.nombre_imagen = imagen
         self.fijo = fijo
+        self.radio_de_colision = 20
 
 
 #===============================================================================
@@ -213,7 +212,7 @@ class Item(pilas.actores.Actor):
 
 class Barra(pilas.actores.Actor):
 
-    def __init__(self, items):
+    def __init__(self, items=[]):
         # TODO: unhack la posicion de la barra
         pilas.actores.Actor.__init__(self, "barra.png", x=-110, y=-210)
         self.z = 1
@@ -239,15 +238,19 @@ class Barra(pilas.actores.Actor):
             pass
 
     def insertar_item(self, item):
-        if len(self.items) < 8:
+        max_items = 8
+        if len(self.items) < max_items:
             self.items.append(item)
             item.x = -280 -50 + len(self.items) * 50
             item.y = -210
             item.z = -20000
-            pilas.actores.utils.insertar_como_nuevo_actor(item)
             item.fijo = True
         else:
-            print "ERROR: no se pueden tomar mas de 8 items."
+            msg = "You already have {} items".format(max_items)
+            t = pilas.actores.TextoInferior(msg, autoeliminar=True, retraso=2)
+            t.color = pilas.colores.rojo
+            t.z = self.z - 1
+
 
 #===============================================================================
 # MAIN

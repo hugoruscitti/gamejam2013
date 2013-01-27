@@ -216,6 +216,7 @@ class Juego(pilas.escena.Base):
                                                  self.encontrar_items)
 
     def youlose(self):
+        self.musicajuego.detener()
         self.camara.x, self.camara.y = 0, 0
         pilas.cambiar_escena(Logos(["youlose.png"], timer=6))
 
@@ -238,13 +239,18 @@ class Encuentro(pilas.escena.Base):
         pilas.escena.Base.__init__(self)
         self.pareja = pareja
         self.viejo = viejo
+        self.timer = pilas.actores.Temporizador(
+            x=(pilas.mundo.motor.ancho_original/2)-50,
+            y=(pilas.mundo.motor.alto_original/2)-10,
+            fuente="visitor1.ttf",
+        )
+        self.timer.ajustar(10, self.salir)
 
     def iniciar(self):
         pilas.escena_actual().camara.x = 0
         pilas.escena_actual().camara.y = 0
 
-        # TODO: sonido corazon
-        self.sonidocorazon = pilas.sonidos.cargar("musicamenu.mp3")
+        self.sonidocorazon = pilas.sonidos.cargar("corazon.mp3")
         self.sonidocorazon.reproducir()
 
         pilas.fondos.Fondo("fondoencuentro.png")
@@ -257,6 +263,9 @@ class Encuentro(pilas.escena.Base):
         pilas.actores.utils.insertar_como_nuevo_actor(self.viejo.barra)
         for item in self.viejo.barra.items:
             pilas.actores.utils.insertar_como_nuevo_actor(item)
+
+        # TODO: el timer no se dibuja
+        self.timer.iniciar()
 
     def salir(self):
         self.sonidocorazon.detener()
