@@ -200,6 +200,7 @@ class Item(pilas.actores.Actor):
         super(Item, self).__init__(imagen=imagen, *args, **kwargs)
         self.nombre_imagen = imagen
         self.fijo = fijo
+        self.radio_de_colision = 20
 
 
 #===============================================================================
@@ -230,15 +231,19 @@ class Barra(pilas.actores.Actor):
             pass
 
     def insertar_item(self, item):
-        if len(self.items) < 8:
+        max_items = 0
+        if len(self.items) < max_items:
             self.items.append(item)
             item.x = -280 -50 + len(self.items) * 50
             item.y = -210
             item.z = -20000
-            #pilas.actores.utils.insertar_como_nuevo_actor(item)
             item.fijo = True
         else:
-            print "ERROR: no se pueden tomar mas de 8 items."
+            msg = "You already have {} items".format(max_items)
+            t = pilas.actores.TextoInferior(msg, autoeliminar=True, retraso=2)
+            t.color = pilas.colores.rojo
+            t.z = self.z - 1
+
 
 #===============================================================================
 # MAIN
