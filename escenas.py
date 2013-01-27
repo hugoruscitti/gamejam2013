@@ -109,7 +109,6 @@ class Menu(pilas.escena.Base):
         self.p.pintar(pilas.colores.negro)
         self.p.transparencia = 40
         self.p.z = 300
-        print self.p
 
     def reanudar(self):
         self.musicamenu.continuar()
