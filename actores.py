@@ -47,15 +47,17 @@ class Viejo(pilas.actores.Calvo):
         self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
+        self._roar = pilas.sonidos.cargar("roar.wav")
         self.barra = Barra()
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
     def malondiar(self):
         self.globo = pilas.actores.Actor(self._pensar, x=self.x, y=self.y)
+        self._roar.reproducir()
         self.globo.centro = ("centro", self.alto + 25)
         self.globo.aprender(pilas.habilidades.Imitar, self)
-        pilas.mundo.agregar_tarea(2, self.dejar_de_malondiar)
+        pilas.mundo.agregar_tarea(2.2, self.dejar_de_malondiar)
 
     def dejar_de_malondiar(self):
         self.globo.eliminar()
@@ -231,7 +233,7 @@ class Barra(pilas.actores.Actor):
             pass
 
     def insertar_item(self, item):
-        max_items = 0
+        max_items = 8
         if len(self.items) < max_items:
             self.items.append(item)
             item.x = -280 -50 + len(self.items) * 50
