@@ -62,7 +62,6 @@ class Viejo(pilas.actores.Calvo):
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
     def agarrar_item(self, item):
-        item.eliminar()
         self.barra.insertar_item(item)
 
     def actualizar(self):
@@ -236,7 +235,7 @@ class Barra(pilas.actores.Actor):
             item.x = -280 -50 + len(self.items) * 50
             item.y = -210
             item.z = -20000
-            pilas.actores.utils.insertar_como_nuevo_actor(item)
+            #pilas.actores.utils.insertar_como_nuevo_actor(item)
             item.fijo = True
         else:
             print "ERROR: no se pueden tomar mas de 8 items."
