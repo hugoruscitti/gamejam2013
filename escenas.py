@@ -235,6 +235,7 @@ class Juego(pilas.escena.Base):
         self.vincular_colisiones()
         self.contador.texto = str(CANTIDAD_PAREJAS - len(self.parejas))
         if not self.parejas:
+            self.musicajuego.detener()
             self.camara.x, self.camara.y = 0, 0
             pilas.cambiar_escena(
                 Logos([(6, "youwin.png", "risa.wav")])
