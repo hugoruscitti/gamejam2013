@@ -21,6 +21,18 @@ import random
 
 import pilas
 
+
+#===============================================================================
+# CONF
+#===============================================================================
+
+
+PAREJAS_X_ITEMS = {"pareja_chetos.png": "choripan.png",
+                   "pareja_punks.png": "alianzas.png",
+                   "pareja_religiosos.png": "consolador.png",
+                   "pareja_viejos.png": "culo.png"}
+
+
 #===============================================================================
 # EL VIEJO
 #===============================================================================
@@ -33,6 +45,7 @@ class Viejo(pilas.actores.Calvo):
         self.radio_de_colision = 40
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
+        self.items = [Item(imagen="choripan.png",x=20,y=20)]
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
@@ -65,10 +78,6 @@ class Viejo(pilas.actores.Calvo):
 
 class Pareja(object):
 
-    FOTOS = ["pareja_chetos.png",
-             "pareja_punks.png",
-             "pareja_religiosos.png"]
-
     def __init__(self, x, y):
         self.velocidad = float("0.{}".format(random.randint(7, 9)))
         if random.randint(0, 1):
@@ -93,7 +102,8 @@ class Pareja(object):
             pilas.imagenes.cargar_grilla("corazon.png", 2),
             True, velocidad=0.9
         )
-        self.imagen = pilas.imagenes.cargar(random.choice(self.FOTOS))
+        self.nombre_imagen = random.choice(PAREJAS_X_ITEMS.keys())
+        self.imagen = pilas.imagenes.cargar(self.nombre_imagen)
         self.right.espejado = True
         self.right.centro = ("centro", "abajo")
         self.left.centro = ("centro", "abajo")
@@ -115,8 +125,8 @@ class Pareja(object):
         self.humo.centro = ("centro", "abajo")
 
     def entregar_item(self, item):
-        # TODO: verificar si el item destruye o no
-        self.romper_pareja()
+        if item.nombre_imagen == self.nombre_imagen_item:
+            self.romper_pareja()
 
     def eliminar(self):
         try:
@@ -153,6 +163,39 @@ class Pareja(object):
         self.left.z = v
         self.right.z = v
 
+    @property
+    def nombre_imagen_item(self):
+        return PAREJAS_X_ITEMS[self.nombre_imagen]
+
+
+#===============================================================================
+# ITEM
+#===============================================================================
+
+class Item(pilas.actores.Actor):
+
+    def __init__(self, imagen, *args, **kwargs):
+        super(Item, self).__init__(imagen=imagen, *args, **kwargs)
+        self.nombre_imagen = imagen
+
+
+#===============================================================================
+# Barra de items
+#===============================================================================
+
+class Barra(object):
+
+    def __init__(self, encuentro, items):
+        for idx, item in enumerate(items):
+            item.x = -205 + (idx * 50)
+            item.y = -195
+        pilas.eventos.click_de_mouse.conectar(self.click_de_mouse)
+        self.encuentro = encuentro
+
+    def click_de_mouse(self, evento):
+        item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
+        if isinstance(item, Item):
+            self.encuentro.entregar_item(item)
 
 
 #===============================================================================
