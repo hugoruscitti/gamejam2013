@@ -1,3 +1,7 @@
+# eclipse
+.settings
+
+
 *.py[cod]
 
 # C extensions

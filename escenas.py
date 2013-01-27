@@ -183,6 +183,12 @@ class Juego(pilas.escena.Base):
         self.vincular_colisiones()
 
     def reanudar(self):
+        self.camara.x, self.camara.y = self.viejo.x, self.viejo.y
+        for k in self.parejas.keys():
+            pareja = self.parejas[k]
+            if pareja.debe_eliminarse:
+                pareja.romper_pareja()
+                self.parejas.pop(k)
         self.vincular_colisiones()
 
     def vincular_colisiones(self):

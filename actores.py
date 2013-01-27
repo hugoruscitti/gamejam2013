@@ -115,6 +115,7 @@ class Pareja(object):
             True, velocidad=0.9
         )
         self._actor = pilas.actores.Actor(imagen="invisible.png")
+        self.debe_eliminarse = False
 
         self.nombre_imagen = random.choice(PAREJAS_X_ITEMS.keys())
         self.imagen = pilas.imagenes.cargar(self.nombre_imagen)
