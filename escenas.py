@@ -176,6 +176,12 @@ class Juego(pilas.escena.Base):
             nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())
             item = actores.Item(imagen=nombre_imagen, x=x, y=y)
             self.lista_items.append(item)
+        self.vincular_colisiones()
+
+    def reanudar(self):
+        self.vincular_colisiones()
+
+    def vincular_colisiones(self):
         pilas.escena_actual().colisiones.agregar(self.viejo,
                                                  self.parejas.keys(),
                                                  self.ir_a_encuentro)
@@ -189,7 +195,7 @@ class Juego(pilas.escena.Base):
     def ir_a_encuentro(self, viejo, act):
         self.musicajuego.pausar()
         pareja = self.parejas[act]
-        pilas.almacenar_escena(Encuentro(pareja, viejo.items))
+        pilas.almacenar_escena(Encuentro(pareja, viejo.items, viejo))
 
 
 #===============================================================================
@@ -198,10 +204,11 @@ class Juego(pilas.escena.Base):
 
 class Encuentro(pilas.escena.Base):
 
-    def __init__(self, pareja, items):
+    def __init__(self, pareja, items, viejo):
         pilas.escena.Base.__init__(self)
         self.pareja = pareja
         self.items = items
+        self.viejo = viejo
 
     def iniciar(self):
         pilas.escena_actual().camara.x = 0
@@ -217,9 +224,12 @@ class Encuentro(pilas.escena.Base):
         fotopareja.escala = [1]
         fotopareja.y = 100
         self.barra = actores.Barra(self, self.items)
+        pilas.eventos.click_de_mouse.conectar(self.salir)
 
-    def salir(self):
+    def salir(self, evento=''):
+        self.pareja.romper_pareja()
         self.sonidocorazon.detener()
+        self.viejo.y -= 80
         pilas.recuperar_escena()
 
     def entregar_item(self, item):

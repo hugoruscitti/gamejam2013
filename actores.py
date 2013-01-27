@@ -114,6 +114,7 @@ class Pareja(object):
         self.x, self.y = x, y
 
     def romper_pareja(self):
+        self.radio_de_colision = 0
         self.eliminar()
         self.corazon_roto = pilas.actores.Animacion(
             pilas.imagenes.cargar_grilla("corazon_roto.png", 2), velocidad=0.9
