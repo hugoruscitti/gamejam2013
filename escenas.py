@@ -171,6 +171,10 @@ class Juego(pilas.escena.Base):
             x, y = self.random_xy()
             item = actores.Item(imagen=pareja.nombre_imagen_item, x=x, y=y)
             self.lista_items.append(item)
+
+        # agregamos todos los items que faltan mas la pistola
+        x, y = self.random_xy()
+        self.lista_items.append(actores.Item(imagen=actores.PISTOLA, x=x, y=y))
         while len(self.lista_items) < CANTIDAD_ITEMS:
             x, y = self.random_xy()
             nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())
@@ -224,10 +228,10 @@ class Encuentro(pilas.escena.Base):
         fotopareja.escala = [1]
         fotopareja.y = 100
         self.barra = actores.Barra(self, self.items)
-        pilas.eventos.click_de_mouse.conectar(self.salir)
+        for item in self.items:
+            pilas.actores.utils.insertar_como_nuevo_actor(item)
 
-    def salir(self, evento=''):
-        self.pareja.romper_pareja()
+    def salir(self):
         self.sonidocorazon.detener()
         self.viejo.y -= 80
         pilas.recuperar_escena()
