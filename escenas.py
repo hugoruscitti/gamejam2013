@@ -37,25 +37,24 @@ TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
 
 class Logos(pilas.escena.Normal):
 
-    def __init__(self, logos=[], timer=2.1):
+    def __init__(self, logos=[]):
         super(Logos, self).__init__()
-        self.timer = timer
         if logos:
             self._logos_futuros = list(logos)
         else:
-            self._logos_futuros = [("pilasengine.png", "roar.wav"),
-                                   ("cbagamejam2013.png", "corazon.mp3"),
-                                   ("globalgamejam2013.png", None)]
-        logo_and_sound = self._logos_futuros.pop(0)
-        self._logo = pilas.imagenes.cargar_imagen(logo_and_sound[0])
-        self._sound = pilas.sonidos.cargar(logo_and_sound[1]) \
-                      if logo_and_sound[1] else None
+            self._logos_futuros = [(2.5, "pilasengine.png", "roar.wav"),
+                                   (2.0, "cbagamejam2013.png", "corazon.mp3"),
+                                   (2.0, "globalgamejam2013.png", None)]
+        lst = self._logos_futuros.pop(0)
+        self._timer = lst[0]
+        self._logo = pilas.imagenes.cargar_imagen(lst[1])
+        self._sound = pilas.sonidos.cargar(lst[2]) if lst[2] else None
 
     def iniciar(self):
         pilas.fondos.Fondo(imagen=self._logo)
         if self._sound:
             self._sound.reproducir()
-        pilas.mundo.agregar_tarea(self.timer, self.siguiente)
+        pilas.mundo.agregar_tarea(self._timer, self.siguiente)
         self.pulsa_tecla.conectar(self.siguiente)
         self.click_de_mouse.conectar(self.siguiente)
 
@@ -63,7 +62,7 @@ class Logos(pilas.escena.Normal):
         if self._sound:
             self._sound.detener()
         if self._logos_futuros:
-            pilas.cambiar_escena(Logos(self._logos_futuros, self.timer))
+            pilas.cambiar_escena(Logos(self._logos_futuros))
         else:
             pilas.cambiar_escena(Menu())
 
@@ -178,12 +177,14 @@ class Juego(pilas.escena.Base):
             pareja = actores.Pareja(x, y)
             self.parejas[pareja.as_actor] = pareja
             x, y = self.random_xy()
-            item = actores.Item(imagen=pareja.nombre_imagen_item, fijo=False, x=x, y=y)
+            item = actores.Item(imagen=pareja.nombre_imagen_item,
+                                fijo=False, x=x, y=y)
             self.lista_items.append(item)
 
         # Agregamos todos los items que faltan mas la pistola
         x, y = self.random_xy()
-        self.lista_items.append(actores.Item(imagen=actores.PISTOLA, fijo=False, x=x, y=y))
+        self.lista_items.append(actores.Item(imagen=actores.PISTOLA,
+                                             fijo=False, x=x, y=y))
         while len(self.lista_items) < CANTIDAD_ITEMS:
             x, y = self.random_xy()
             nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())
@@ -212,7 +213,9 @@ class Juego(pilas.escena.Base):
         self.vincular_colisiones()
         if not self.parejas:
             self.camara.x, self.camara.y = 0, 0
-            pilas.cambiar_escena(Logos(["youwin.png"], timer=6))
+            pilas.cambiar_escena(
+                Logos([(6, "youwin.png", "risa.wav")])
+            )
 
     def vincular_colisiones(self):
         pilas.escena_actual().colisiones.agregar(self.viejo,
@@ -225,7 +228,9 @@ class Juego(pilas.escena.Base):
     def youlose(self):
         self.musicajuego.detener()
         self.camara.x, self.camara.y = 0, 0
-        pilas.cambiar_escena(Logos(["youlose.png"], timer=6))
+        pilas.cambiar_escena(
+            Logos([(6, "youlose.png", "perder.wav")])
+        )
 
     def encontrar_items(self, viejo, item):
         viejo.agarrar_item(item)
@@ -289,7 +294,7 @@ class Encuentro(pilas.escena.Base):
         self.viejo.y -= 80
         pilas.recuperar_escena()
 
- 
+
 
 
 #===============================================================================
