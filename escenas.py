@@ -28,6 +28,7 @@ import actores
 
 CANTIDAD_PAREJAS = 20
 CANTIDAD_ITEMS = CANTIDAD_PAREJAS + 10
+TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
 
 
 #===============================================================================
@@ -162,7 +163,7 @@ class Juego(pilas.escena.Base):
         self.viejo = actores.Viejo(self.mapa)
         self.actualizar.conectar(self.centrar_camara)
 
-        # CREAR PAREJAS
+        # Crear parejas
         self.parejas = {}
         self.lista_items = []
         for x in range(CANTIDAD_PAREJAS):
@@ -173,7 +174,7 @@ class Juego(pilas.escena.Base):
             item = actores.Item(imagen=pareja.nombre_imagen_item, fijo=False, x=x, y=y)
             self.lista_items.append(item)
 
-        # agregamos todos los items que faltan mas la pistola
+        # Agregamos todos los items que faltan mas la pistola
         x, y = self.random_xy()
         self.lista_items.append(actores.Item(imagen=actores.PISTOLA, fijo=False, x=x, y=y))
         while len(self.lista_items) < CANTIDAD_ITEMS:
@@ -181,6 +182,16 @@ class Juego(pilas.escena.Base):
             nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())
             item = actores.Item(imagen=nombre_imagen, fijo=False, x=x, y=y)
             self.lista_items.append(item)
+
+        # Creamos el timer del juego
+        self.timer = pilas.actores.Temporizador(
+            x=(pilas.mundo.motor.ancho_original/2)-50,
+            y=(pilas.mundo.motor.alto_original/2)-10
+        )
+        self.timer.ajustar(TIEMPO_DE_JUEGO, self.youlose)
+        self.timer.iniciar()
+
+        # Vinculamos las colisiones
         self.vincular_colisiones()
 
     def reanudar(self):
@@ -192,7 +203,8 @@ class Juego(pilas.escena.Base):
                 self.parejas.pop(k)
         self.vincular_colisiones()
         if not self.parejas:
-            pilas.cambiar_escena(Logos(["youlose.png"], timer=6))
+            self.camara.x, self.camara.y = 0, 0
+            pilas.cambiar_escena(Logos(["youwin.png"], timer=6))
 
     def vincular_colisiones(self):
         pilas.escena_actual().colisiones.agregar(self.viejo,
@@ -201,6 +213,10 @@ class Juego(pilas.escena.Base):
         pilas.escena_actual().colisiones.agregar(self.viejo,
                                                  self.lista_items,
                                                  self.encontrar_items)
+
+    def youlose(self):
+        self.camara.x, self.camara.y = 0, 0
+        pilas.cambiar_escena(Logos(["youlose.png"], timer=6))
 
     def encontrar_items(self, viejo, item):
         viejo.agarrar_item(item)
