@@ -105,7 +105,7 @@ class Menu(pilas.escena.Base):
                                         fuente="visitor1.ttf",
                                         y=-40)
 
-        self.p = pilas.actores.Pizarra(0, -120, 300, 200)
+        self.p = pilas.actores.Pizarra(0, -120, 640, 200)
         self.p.pintar(pilas.colores.negro)
         self.p.transparencia = 40
         self.p.z = 300
