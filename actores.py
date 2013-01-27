@@ -139,9 +139,10 @@ class Pareja(object):
         self.humo.x, self.humo.y = self.x, self.y
         self.humo.centro = ("centro", "abajo")
 
-    def entregar_item(self, item):
-        if item.nombre_imagen in (self.nombre_imagen_item, PISTOLA):
-            self.romper_pareja()
+    def se_elimina_con_item(self, item):
+        """Informa si el item destruye a la pareja o no."""
+        return item.nombre_imagen in (self.nombre_imagen_item, PISTOLA)
+
 
     def eliminar(self):
         try:
