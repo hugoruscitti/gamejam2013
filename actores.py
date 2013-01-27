@@ -125,6 +125,7 @@ class Pareja(object):
         self.x, self.y = x, y
 
     def romper_pareja(self):
+        print "Ostioooon!!"
         self.radio_de_colision = 0
         self.eliminar()
         self.corazon_roto = pilas.actores.Animacion(

@@ -271,19 +271,14 @@ class Encuentro(pilas.escena.Base):
     
     def hace_click_de_mouse(self, evento):
         item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
-        print item
         if isinstance(item, actores.Item):
-            print "Ostiaaasss !!!!"
-        pass
+            self.pareja.entregar_item(item)
+            self.salir()
 
     def salir(self):
         self.sonidocorazon.detener()
         self.viejo.y -= 80
         pilas.recuperar_escena()
-
-    def entregar_item(self, item):
-        self.pareja.entregar_item(item)
-        self.salir()
 
 
 #===============================================================================
