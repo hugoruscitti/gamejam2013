@@ -28,7 +28,7 @@ import escenas
 
 def main():
     pilas.iniciar(titulo="Malondon")
-    pilas.cambiar_escena(escenas.Juego())
+    pilas.cambiar_escena(escenas.Logos())
     pilas.ejecutar()
 
 if __name__ == "__main__":

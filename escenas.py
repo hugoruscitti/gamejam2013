@@ -37,24 +37,31 @@ TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
 
 class Logos(pilas.escena.Normal):
 
-    def __init__(self, logos=[], timer=2):
+    def __init__(self, logos=[], timer=2.1):
         super(Logos, self).__init__()
         self.timer = timer
         if logos:
             self._logos_futuros = list(logos)
         else:
-            self._logos_futuros = ["pilasengine.png",
-                                   "cbagamejam2013.png",
-                                   "globalgamejam2013.png"]
-        self._logo = pilas.imagenes.cargar_imagen(self._logos_futuros.pop(0))
+            self._logos_futuros = [("pilasengine.png", "roar.wav"),
+                                   ("cbagamejam2013.png", "corazon.mp3"),
+                                   ("globalgamejam2013.png", None)]
+        logo_and_sound = self._logos_futuros.pop(0)
+        self._logo = pilas.imagenes.cargar_imagen(logo_and_sound[0])
+        self._sound = pilas.sonidos.cargar(logo_and_sound[1]) \
+                      if logo_and_sound[1] else None
 
     def iniciar(self):
         pilas.fondos.Fondo(imagen=self._logo)
+        if self._sound:
+            self._sound.reproducir()
         pilas.mundo.agregar_tarea(self.timer, self.siguiente)
         self.pulsa_tecla.conectar(self.siguiente)
         self.click_de_mouse.conectar(self.siguiente)
 
     def siguiente(self, *args, **kwargs):
+        if self._sound:
+            self._sound.detener()
         if self._logos_futuros:
             pilas.cambiar_escena(Logos(self._logos_futuros, self.timer))
         else:
@@ -279,6 +286,8 @@ class Encuentro(pilas.escena.Base):
         self.sonidocorazon.detener()
         self.viejo.y -= 80
         pilas.recuperar_escena()
+
+ 
 
 
 #===============================================================================
