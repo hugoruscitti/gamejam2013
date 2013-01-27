@@ -171,6 +171,10 @@ class Juego(pilas.escena.Base):
             x, y = self.random_xy()
             item = actores.Item(imagen=pareja.nombre_imagen_item, x=x, y=y)
             self.lista_items.append(item)
+
+        # agregamos todos los items que faltan mas la pistola
+        x, y = self.random_xy()
+        self.lista_items.append(actores.Item(imagen=actores.PISTOLA, x=x, y=y))
         while len(self.lista_items) < CANTIDAD_ITEMS:
             x, y = self.random_xy()
             nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())

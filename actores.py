@@ -32,6 +32,8 @@ PAREJAS_X_ITEMS = {"pareja_chetos.png": "choripan.png",
                    "pareja_religiosos.png": "consolador.png",
                    "pareja_viejos.png": "culo.png"}
 
+PISTOLA = "pistola.png"
+
 
 #===============================================================================
 # EL VIEJO
@@ -131,7 +133,7 @@ class Pareja(object):
         self.humo.centro = ("centro", "abajo")
 
     def entregar_item(self, item):
-        if item.nombre_imagen == self.nombre_imagen_item:
+        if item.nombre_imagen in (self.nombre_imagen_item, PISTOLA):
             self.romper_pareja()
 
     def eliminar(self):
