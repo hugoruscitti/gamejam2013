@@ -222,6 +222,7 @@ class Juego(pilas.escena.Base):
             pilas.cambiar_escena(
                 Logos([(6, "youwin.png", "risa.wav")])
             )
+        self.musicajuego.continuar()
 
     def vincular_colisiones(self):
         pilas.escena_actual().colisiones.agregar(self.viejo,
@@ -244,7 +245,7 @@ class Juego(pilas.escena.Base):
     def ir_a_encuentro(self, viejo, act):
         self.musicajuego.pausar()
         pareja = self.parejas[act]
-        pilas.almacenar_escena(Encuentro(pareja, viejo))
+        pilas.almacenar_escena(Encuentro(pareja, viejo, self.mapa))
 
 
 #===============================================================================
@@ -253,7 +254,7 @@ class Juego(pilas.escena.Base):
 
 class Encuentro(pilas.escena.Base):
 
-    def __init__(self, pareja, viejo):
+    def __init__(self, pareja, viejo, mapa):
         pilas.escena.Base.__init__(self)
         self.pareja = pareja
         self.viejo = viejo
@@ -262,6 +263,7 @@ class Encuentro(pilas.escena.Base):
             y=(pilas.mundo.motor.alto_original/2)-10,
             fuente="visitor1.ttf",
         )
+        self.mapa = mapa
         self.timer.ajustar(10, self.salir)
 
     def iniciar(self):
@@ -297,7 +299,9 @@ class Encuentro(pilas.escena.Base):
 
     def salir(self):
         self.sonidocorazon.detener()
-        self.viejo.y -= 80
+        self.viejo.y = self.viejo.y -50
+        while self.mapa.es_punto_solido(self.viejo.x, self.viejo.y):
+            self.viejo.y = self.viejo.y -50
         pilas.recuperar_escena()
 
 
