@@ -50,7 +50,6 @@ class Viejo(pilas.actores.Calvo):
 
         items = []
         self.barra = Barra(items)
-        # TODO: El viejo ya tiene los 4 items recolectados
 
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
@@ -217,10 +216,12 @@ class Barra(pilas.actores.Actor):
     def __init__(self, items):
         # TODO: unhack la posicion de la barra
         pilas.actores.Actor.__init__(self, "barra.png", x=-110, y=-210)
+        self.z = 1
         self.items = items
         for idx, item in enumerate(items):
             item.x = -280 + (idx * 50)
             item.y = -210
+            item.z = 0
             pilas.actores.utils.insertar_como_nuevo_actor(item)
             item.z = -20000
 
@@ -230,9 +231,11 @@ class Barra(pilas.actores.Actor):
 
     def click_de_mouse(self, evento):
         item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
-        if isinstance(item, Item) and isinstance(pilas.escena_actual(), Encuentro):
-            #self.encuentro.entregar_item(item)
-            # TODO: que la pareja recibe el item
+        print isinstance(item, Item)
+        print pilas.escena_actual()
+        print isinstance(pilas.escena_actual(), escenas.Encuentro)
+        if isinstance(item, Item) and isinstance(pilas.escena_actual(), escenas.Encuentro):
+            print "Ostiaaasss !!!!"
             pass
 
     def insertar_item(self, item):

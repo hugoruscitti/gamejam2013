@@ -160,7 +160,7 @@ class Juego(pilas.escena.Base):
         self.musicajuego.reproducir()
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
         self.mapa.z = self.mapa.alto + 10
-        self.viejo = actores.Viejo(self.mapa)
+        self.viejo = actores.Viejo(self.mapa, x=-20, y=20)
         self.actualizar.conectar(self.centrar_camara)
 
         # Crear parejas
