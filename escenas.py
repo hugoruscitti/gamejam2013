@@ -217,7 +217,9 @@ class Encuentro(pilas.escena.Base):
         fotopareja.escala = [1]
         fotopareja.y = 100
         self.barra = actores.Barra(self, self.items)
-
+        for item in self.items:
+            pilas.actores.utils.insertar_como_nuevo_actor(item)
+        
     def salir(self):
         self.sonidocorazon.detener()
         pilas.recuperar_escena()

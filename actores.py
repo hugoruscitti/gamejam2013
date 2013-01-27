@@ -44,7 +44,11 @@ class Viejo(pilas.actores.Calvo):
         self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
-        self.items = []
+        self.items = [Item(imagen="choripan.png",x=20,y=20),
+                      Item(imagen="alianzas.png",x=50,y=20),
+                      Item(imagen="consolador.png",x=80,y=20),
+                      Item(imagen="culo.png",x=110,y=20)]
+        # TODO: El viejo ya tiene los 4 items recolectados
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
 
@@ -202,6 +206,8 @@ class Barra(object):
         for idx, item in enumerate(items):
             item.x = -205 + (idx * 50)
             item.y = -195
+            print item.nombre_imagen
+            
         pilas.eventos.click_de_mouse.conectar(self.click_de_mouse)
         self.encuentro = encuentro
 
