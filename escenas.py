@@ -216,6 +216,7 @@ class Juego(pilas.escena.Base):
                                                  self.encontrar_items)
 
     def youlose(self):
+        self.musicajuego.detener()
         self.camara.x, self.camara.y = 0, 0
         pilas.cambiar_escena(Logos(["youlose.png"], timer=6))
 
