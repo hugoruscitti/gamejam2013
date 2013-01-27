@@ -266,6 +266,15 @@ class Encuentro(pilas.escena.Base):
 
         # TODO: el timer no se dibuja
         self.timer.iniciar()
+            
+        pilas.eventos.click_de_mouse.conectar(self.hace_click_de_mouse)
+    
+    def hace_click_de_mouse(self, evento):
+        item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
+        print item
+        if isinstance(item, actores.Item):
+            print "Ostiaaasss !!!!"
+        pass
 
     def salir(self):
         self.sonidocorazon.detener()

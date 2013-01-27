@@ -223,19 +223,8 @@ class Barra(pilas.actores.Actor):
             item.z = 0
             pilas.actores.utils.insertar_como_nuevo_actor(item)
             item.z = -20000
-
-        pilas.eventos.click_de_mouse.conectar(self.click_de_mouse)
         self.fijo = True
         self.z = -10000
-
-    def click_de_mouse(self, evento):
-        item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
-        print isinstance(item, Item)
-        print pilas.escena_actual()
-        print isinstance(pilas.escena_actual(), escenas.Encuentro)
-        if isinstance(item, Item) and isinstance(pilas.escena_actual(), escenas.Encuentro):
-            print "Ostiaaasss !!!!"
-            pass
 
     def insertar_item(self, item):
         max_items = 8
