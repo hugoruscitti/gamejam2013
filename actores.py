@@ -34,6 +34,7 @@ class Viejo(pilas.actores.Calvo):
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
+        self.centro = ("centro", "abajo")
 
     def malondiar(self):
         self.globo = pilas.actores.Actor(self._pensar)
@@ -116,7 +117,7 @@ class Pareja(object):
     def entregar_item(self, item):
         # TODO: verificar si el item destruye o no
         self.romper_pareja()
-        
+
     def eliminar(self):
         try:
             self.corazon.eliminar()
