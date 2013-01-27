@@ -36,8 +36,9 @@ CANTIDAD_ITEMS = CANTIDAD_PAREJAS + 10
 
 class Logos(pilas.escena.Normal):
 
-    def __init__(self, *logos):
+    def __init__(self, logos=[], timer=2):
         super(Logos, self).__init__()
+        self.timer = timer
         if logos:
             self._logos_futuros = list(logos)
         else:
@@ -48,13 +49,13 @@ class Logos(pilas.escena.Normal):
 
     def iniciar(self):
         pilas.fondos.Fondo(imagen=self._logo)
-        pilas.mundo.agregar_tarea(2, self.siguiente)
+        pilas.mundo.agregar_tarea(self.timer, self.siguiente)
         self.pulsa_tecla.conectar(self.siguiente)
         self.click_de_mouse.conectar(self.siguiente)
 
     def siguiente(self, *args, **kwargs):
         if self._logos_futuros:
-            pilas.cambiar_escena(Logos(*self._logos_futuros))
+            pilas.cambiar_escena(Logos(self._logos_futuros, self.timer))
         else:
             pilas.cambiar_escena(Menu())
 
@@ -160,7 +161,7 @@ class Juego(pilas.escena.Base):
         self.mapa.z = self.mapa.alto + 10
         self.viejo = actores.Viejo(self.mapa)
         self.actualizar.conectar(self.centrar_camara)
-           
+
         # CREAR PAREJAS
         self.parejas = {}
         self.lista_items = []
@@ -190,6 +191,8 @@ class Juego(pilas.escena.Base):
                 pareja.romper_pareja()
                 self.parejas.pop(k)
         self.vincular_colisiones()
+        if not self.parejas:
+            pilas.cambiar_escena(Logos(["youlose.png"], timer=6))
 
     def vincular_colisiones(self):
         pilas.escena_actual().colisiones.agregar(self.viejo,
@@ -232,7 +235,7 @@ class Encuentro(pilas.escena.Base):
         fotopareja.escala = 0.8
         fotopareja.escala = [1]
         fotopareja.y = 100
-        
+
         # TODO: el redibujar,  meterlo en una funcion
         pilas.actores.utils.insertar_como_nuevo_actor(self.viejo.barra)
         for item in self.viejo.barra.items:
@@ -246,6 +249,7 @@ class Encuentro(pilas.escena.Base):
     def entregar_item(self, item):
         self.pareja.entregar_item(item)
         self.salir()
+
 
 #===============================================================================
 # MAIN
