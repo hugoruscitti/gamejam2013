@@ -46,7 +46,7 @@ class Logos(pilas.escena.Normal):
                                    (2.0, "cbagamejam2013.png", "corazon.mp3"),
                                    (2.0, "globalgamejam2013.png", None)]
         self.escena_siguiente = escena_siguiente or Menu
-        
+
         lst = self._logos_futuros.pop(0)
         self._timer = lst[0]
         self._logo = pilas.imagenes.cargar_imagen(lst[1])
@@ -97,8 +97,8 @@ class Menu(pilas.escena.Base):
 
     def juego(self):
         self.musicamenu.detener()
-        pilas.cambiar_escena(Logos([(6,"viejo_historia.png", 
-                                    "musicamenu.mp3")], Juego))
+        pilas.cambiar_escena(Logos([(22,"viejo_historia.png",
+                                    "historia.mp3")], Juego))
 
     def about(self):
         pilas.almacenar_escena(About())
