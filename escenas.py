@@ -37,7 +37,7 @@ TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
 
 class Logos(pilas.escena.Normal):
 
-    def __init__(self, logos=[]):
+    def __init__(self, logos=[], escena_siguiente=None):
         super(Logos, self).__init__()
         if logos:
             self._logos_futuros = list(logos)
@@ -45,6 +45,8 @@ class Logos(pilas.escena.Normal):
             self._logos_futuros = [(2.5, "pilasengine.png", "roar.wav"),
                                    (2.0, "cbagamejam2013.png", "corazon.mp3"),
                                    (2.0, "globalgamejam2013.png", None)]
+        self.escena_siguiente = escena_siguiente or Menu
+        
         lst = self._logos_futuros.pop(0)
         self._timer = lst[0]
         self._logo = pilas.imagenes.cargar_imagen(lst[1])
@@ -64,7 +66,7 @@ class Logos(pilas.escena.Normal):
         if self._logos_futuros:
             pilas.cambiar_escena(Logos(self._logos_futuros))
         else:
-            pilas.cambiar_escena(Menu())
+            pilas.cambiar_escena(self.escena_siguiente())
 
 
 #===============================================================================
@@ -95,7 +97,8 @@ class Menu(pilas.escena.Base):
 
     def juego(self):
         self.musicamenu.detener()
-        pilas.cambiar_escena(Juego())
+        pilas.cambiar_escena(Logos([(6,"viejo_historia.png", 
+                                    "musicamenu.mp3")], Juego))
 
     def about(self):
         pilas.almacenar_escena(About())
