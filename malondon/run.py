@@ -18,6 +18,7 @@
 #===============================================================================
 
 import pilas
+import conf
 
 import escena_menu
 
@@ -27,7 +28,8 @@ import escena_menu
 #===============================================================================
 
 def main():
-    pilas.iniciar(titulo="Malondon")
+    pilas.iniciar(titulo="Malondon",
+                  pantalla_completa=conf.get("pantalla_completa", False))
     logos = pilas.escena.Logos(escena_menu.Menu(), pilas_logo=False)
     logos.agregar_logo("pilasengine.png", sonido="roar.wav")
     logos.agregar_logo("globalgamejam2013.png", timer=2.0)
