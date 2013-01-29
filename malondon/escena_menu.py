@@ -17,6 +17,8 @@
 # IMPORTS
 #===============================================================================
 
+import webbrowser
+
 import pilas
 import actores
 
@@ -32,6 +34,10 @@ class Menu(pilas.escena.Base):
         pass
         #~ pilas.cambiar_escena(Logos([(22,"viejo_historia.png",
                                     #~ "historia.mp3")], Juego))
+
+    def listen_game_over(self):
+        webbrowser.open("http://www.jamendo.com/es/list/a97199/game-over")
+        pilas.terminar()
 
     def about(self):
         self.musicamenu.detener()
@@ -49,6 +55,7 @@ class Menu(pilas.escena.Base):
         opciones = {"Let's Break Some Hearts": self.juego,
                     "About": self.about,
                     "Full Screen?": self.full_screen,
+                    "Listen: 'Game Over' Malondon OST", self.liste_game_over,
                     "Exit": self.salir_del_juego}
         self.menu = pilas.actores.Menu(opciones.items(),
                                        fuente="visitor1.ttf", y=-40)
