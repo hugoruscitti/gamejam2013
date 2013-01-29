@@ -23,6 +23,8 @@ import pilas
 import actores
 
 import conf
+import escena_juego
+
 
 #===============================================================================
 # MENU PRINCIPAL
@@ -31,10 +33,11 @@ import conf
 class Menu(pilas.escena.Base):
 
     def juego(self):
-        #self.musicamenu.detener()
-        pass
-        #~ pilas.cambiar_escena(Logos([(22,"viejo_historia.png",
-                                    #~ "historia.mp3")], Juego))
+        self.musicamenu.detener()
+        juego = pilas.escena.Logos(escena_juego.Juego(), pilas_logo=False)
+        juego.agregar_logo("viejo_historia.png", timer=22,
+                           sonido="historia.mp3")
+        pilas.cambiar_escena(juego)
 
     def listen_game_over(self):
         webbrowser.open("http://www.jamendo.com/es/list/a97199/game-over")
@@ -48,7 +51,7 @@ class Menu(pilas.escena.Base):
 
     def full_screen(self):
         pilas.mundo.motor.canvas.alternar_pantalla_completa()
-        conf.store("pantall_completa",
+        conf.store("pantalla_completa",
                    pilas.mundo.motor.canvas.esta_en_pantalla_completa())
 
     def salir_del_juego(self):

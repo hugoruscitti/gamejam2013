@@ -21,6 +21,7 @@ import pilas
 import conf
 
 import escena_menu
+import escena_juego
 
 
 #===============================================================================
@@ -34,7 +35,7 @@ def main():
     logos.agregar_logo("pilasengine.png", sonido="roar.wav")
     logos.agregar_logo("globalgamejam2013.png", timer=2.0)
     logos.agregar_logo("cbagamejam2013.png", timer=2, sonido="corazon.mp3"),
-    pilas.cambiar_escena(logos)
+    pilas.cambiar_escena(escena_juego.Juego())
     pilas.ejecutar()
 
 if __name__ == "__main__":
