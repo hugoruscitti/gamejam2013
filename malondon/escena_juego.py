@@ -165,7 +165,7 @@ class Juego(pilas.escena.Base):
                 self.parejas.pop(k)
         self.vincular_colisiones()
         self.contador.texto = str(len(self.parejas))
-        if self.parejas:
+        if not self.parejas:
             self.musicajuego.detener()
             self.camara.x, self.camara.y = 0, 0
             youwin = pilas.escena.Logos(escena_menu.Menu(), pilas_logo=False)
