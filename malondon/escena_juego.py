@@ -19,7 +19,8 @@
 
 import random
 import pilas
-import actores
+import actor_barra as actores
+import actor_viejo
 
 import escena_menu
 import escena_encuentro
@@ -94,7 +95,7 @@ class Juego(pilas.escena.Base):
         self.mapa.z = self.mapa.alto + 10
 
         # creamos el protagonista
-        self.viejo = actores.Viejo(self.mapa)
+        self.viejo = actor_viejo.Viejo(self.mapa)
         xy = self.cerca_de_xy(0, 0, max([self.viejo.alto, self.viejo.ancho]))
         self.viejo.x, self.viejo.y = xy
 
