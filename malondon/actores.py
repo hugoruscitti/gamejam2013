@@ -44,7 +44,6 @@ class Viejo(pilas.actores.Calvo):
 
     def __init__(self, *args, **kwargs):
         super(Viejo, self).__init__(*args, **kwargs)
-        self.x = self.x - 50
         self.imagen = pilas.imagenes.cargar_grilla("viejo.png", 3, 4)
         self._pensar = pilas.imagenes.cargar("pensar.png")
         items = []
@@ -52,6 +51,9 @@ class Viejo(pilas.actores.Calvo):
         self._roar = pilas.sonidos.cargar("roar.wav")
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.centro = ("centro", "abajo")
+
+    def bloquear(self):
+        self.hacer(pilas.comportamientos.Comportamiento())
 
     def malondiar(self):
         self.globo = pilas.actores.Actor(self._pensar, x=self.x, y=self.y)

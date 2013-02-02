@@ -31,10 +31,13 @@ import escena_juego
 def main():
     pilas.iniciar(titulo="Malondon",
                   pantalla_completa=conf.get("pantalla_completa", False))
-    logos = pilas.escena.Logos(escena_menu.Menu(), pilas_logo=False)
+    logos = pilas.escena.Logos(escena_menu.Menu(), pilas_logo=False,
+                               pasar_con_click_de_mouse=True,
+                               pasar_con_teclado=True)
     logos.agregar_logo("pilasengine.png", sonido="roar.wav")
     logos.agregar_logo("globalgamejam2013.png")
-    logos.agregar_logo("cbagamejam2013.png", sonido="corazon_corto.mp3"),
+    logos.agregar_logo("cbagamejam2013.png", timer=2.5,
+                       sonido="corazon_corto.mp3"),
     logos.agregar_logo("gpl3.png")
     pilas.cambiar_escena(logos)
     pilas.ejecutar()

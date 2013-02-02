@@ -165,12 +165,9 @@ class Juego(pilas.escena.Base):
                 self.parejas.pop(k)
         self.vincular_colisiones()
         self.contador.texto = str(len(self.parejas))
-        if not self.parejas:
-            self.musicajuego.detener()
-            self.camara.x, self.camara.y = 0, 0
-            youwin = pilas.escena.Logos(escena_menu.Menu(), pilas_logo=False)
-            youwin.agregar_logo("youwin.png", timer=219.5, sonido="youwin.mp3")
-            pilas.cambiar_escena(youwin)
+        if self.parejas:
+            self.viejo.bloquear()
+            pilas.mundo.agregar_tarea(2, self.youwin)
         self.musicajuego.continuar()
 
     def vincular_colisiones(self):
@@ -181,12 +178,23 @@ class Juego(pilas.escena.Base):
                                                  self.lista_items,
                                                  self.encontrar_items)
 
+    def youwin(self):
+        self.musicajuego.detener()
+        self.camara.x, self.camara.y = 0, 0
+        youwin = pilas.escena.Logos(escena_menu.Menu(), pasar_con_teclado=True,
+                                    pasar_con_click_de_mouse=True,
+                                    pilas_logo=False, mostrar_almenos=4)
+        youwin.agregar_logo("youwin.png", timer=219.5, sonido="youwin.mp3")
+        pilas.cambiar_escena(youwin)
+
     def youlose(self):
         self.musicajuego.detener()
         self.camara.x, self.camara.y = 0, 0
-        pilas.cambiar_escena(
-            Logos([(6, "youlose.png", "perder.wav")])
-        )
+        youlose = pilas.escena.Logos(escena_menu.Menu(), pasar_con_teclado=True,
+                                     pasar_con_click_de_mouse=True,
+                                     pilas_logo=False, mostrar_almenos=6)
+        youlose.agregar_logo("youlose.png", timer=6, sonido="perder.wav")
+        pilas.cambiar_escena(youlose)
 
     def encontrar_items(self, viejo, item):
         viejo.agarrar_item(item)

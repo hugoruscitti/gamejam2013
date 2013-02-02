@@ -34,7 +34,10 @@ class Menu(pilas.escena.Base):
 
     def juego(self):
         self.musicamenu.detener()
-        juego = pilas.escena.Logos(escena_juego.Juego(), pilas_logo=False)
+        juego = pilas.escena.Logos(escena_juego.Juego(), pilas_logo=False,
+                                   pasar_con_teclado=True,
+                                   pasar_con_click_de_mouse=True,
+                                   mostrar_almenos=6)
         juego.agregar_logo("viejo_historia.png", timer=22,
                            sonido="historia.mp3")
         pilas.cambiar_escena(juego)
@@ -45,7 +48,10 @@ class Menu(pilas.escena.Base):
 
     def about(self):
         self.musicamenu.detener()
-        about = pilas.escena.Logos(Menu(), pilas_logo=False)
+        about = pilas.escena.Logos(Menu(), pilas_logo=False,
+                                   pasar_con_teclado=True,
+                                   pasar_con_click_de_mouse=True,
+                                   mostrar_almenos=6)
         about.agregar_logo("about.png", timer=247, sonido="about.mp3")
         pilas.cambiar_escena(about)
 
@@ -72,7 +78,8 @@ class Menu(pilas.escena.Base):
     # Redefinidos
     #===========================
     def iniciar(self):
-        self.musicamenu = pilas.sonidos.cargar("musicamenu.mp3")
+        self.camara.x, self.camara.y = 0, 0
+        self.musicamenu = pilas.musica.cargar("musicamenu.mp3")
         self.musicamenu.reproducir()
         pilas.fondos.Fondo("menu.png")
         pilas.mundo.agregar_tarea(2, self.mostrar_menu)
