@@ -20,7 +20,6 @@
 import webbrowser
 
 import pilas
-import actores
 
 import conf
 import escena_juego

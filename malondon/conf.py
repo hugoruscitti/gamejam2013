@@ -56,6 +56,24 @@ def get(name, default=None):
 
 
 #===============================================================================
+# RELACIONES DE ITEMS CON PAREJAS
+#===============================================================================
+
+PAREJAS_X_ITEMS = {"pareja_chetos.png": "choripan.png",
+                   "pareja_punks.png": "alianzas.png",
+                   "pareja_religiosos.png": "consolador.png",
+                   "pareja_viejos.png": "culo.png"}
+
+PISTOLA = "pistola.png"
+
+CANTIDAD_PAREJAS = 20
+
+CANTIDAD_ITEMS = CANTIDAD_PAREJAS + 10
+
+TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
+
+
+#===============================================================================
 # MAIN
 #===============================================================================
 

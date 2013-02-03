@@ -19,20 +19,15 @@
 
 import random
 import pilas
-import actor_barra as actores
-import actor_viejo
 
+
+import conf
+import actor_viejo
+import actor_pareja
+import actor_item
 import escena_menu
 import escena_encuentro
 
-
-#===============================================================================
-# CANTIDAD PAREJAS
-#===============================================================================
-
-CANTIDAD_PAREJAS = 20
-CANTIDAD_ITEMS = CANTIDAD_PAREJAS + 10
-TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
 
 
 #===============================================================================
@@ -47,7 +42,7 @@ class Juego(pilas.escena.Base):
         except:
             return False
 
-    def cerca_de_xy(self, x, y, radio=0):
+    def _cerca_de_xy(self, x, y, radio=0):
         inc_x, inc_y = 2, 2
         while not self._is_valid(x, y):
             x += random.randint(radio+1, radio+inc_x)
@@ -62,7 +57,7 @@ class Juego(pilas.escena.Base):
                 inc_y += 1
         return x, y
 
-    def random_xy(self):
+    def _random_xy_lejos_viejo(self):
         valid = False
         while not valid:
             x = (random.randint(0, self.mapa.ancho) / 2) + 10
@@ -75,7 +70,7 @@ class Juego(pilas.escena.Base):
                     and self.viejo.distancia_al_punto(x, y) > 300
         return x, y
 
-    def centrar_camara(self, evt):
+    def _centrar_camara(self, evt):
         mm_ancho = self.mapa.ancho / 2
         mm_alto = self.mapa.alto / 2
         mp_ancho = pilas.mundo.motor.ancho_original / 2
@@ -96,60 +91,58 @@ class Juego(pilas.escena.Base):
 
         # creamos el protagonista
         self.viejo = actor_viejo.Viejo(self.mapa)
-        xy = self.cerca_de_xy(0, 0, max([self.viejo.alto, self.viejo.ancho]))
-        self.viejo.x, self.viejo.y = xy
+        x, y = self._cerca_de_xy(0, 0, max([self.viejo.alto, self.viejo.ancho]))
+        self.viejo.x, self.viejo.y = x, y
 
         # Crear parejas
-        self.parejas = {}
-        self.lista_items = []
-        for x in range(CANTIDAD_PAREJAS):
-            pareja = actores.Pareja(*self.random_xy())
-            self.parejas[pareja.as_actor] = pareja
-            x, y = self.random_xy()
-            item = actores.Item(imagen=pareja.nombre_imagen_item,
-                                fijo=False, x=x, y=y)
-            self.lista_items.append(item)
+        self.parejas = []
+        self.items = []
+        while len(self.parejas) < conf.CANTIDAD_PAREJAS:
+            pareja = actor_pareja.Pareja(*self._random_xy_lejos_viejo())
+            self.parejas.append(pareja)
+            x, y = self._random_xy_lejos_viejo()
+            item = actor_item.Item(imagen=pareja.me_elimina_el_item, x=x, y=y)
+            self.items.append(item)
 
         # Agregamos todos los items que faltan mas la pistola
-        x, y = self.random_xy()
-        self.lista_items.append(actores.Item(imagen=actores.PISTOLA,
-                                             fijo=False, x=x, y=y))
-        while len(self.lista_items) < CANTIDAD_ITEMS:
-            x, y = self.random_xy()
-            nombre_imagen = random.choice(actores.PAREJAS_X_ITEMS.values())
-            item = actores.Item(imagen=nombre_imagen, fijo=False, x=x, y=y)
-            self.lista_items.append(item)
-
-        # Creamos el timer del juego
-        self.timer = pilas.actores.Temporizador(
-            x=(pilas.mundo.motor.ancho_original/2)-50,
-            y=(pilas.mundo.motor.alto_original/2)-10,
-            fuente="visitor1.ttf",
-        )
-        self.timer.ajustar(TIEMPO_DE_JUEGO, self.youlose)
-        self.timer.iniciar()
-
-        # Contador de parejas rotas
-        self.corazon_roto = pilas.actores.Actor(
-            pilas.imagenes.cargar_grilla("corazon_roto.png", 2),
-             x=110, y=-210
-        )
-        self.corazon_roto.escala = 2
-        self.corazon_roto.fijo = True
-        self.corazon_roto.z = -20000
-        self.contador = pilas.actores.Texto(
-            str(len(self.parejas)),
-            fuente="visitor1.ttf", x=147, y=-205
-        )
-        self.contador.color = pilas.colores.rojo
-        self.contador.fijo = True
-        self.contador.z = -20000
-
-        # Vinculamos las colisiones
-        self.vincular_colisiones()
-
-        # Eventos globales
-        self.actualizar.conectar(self.centrar_camara)
+        while len(self.items) < conf.CANTIDAD_ITEMS:
+            x, y = self._random_xy_lejos_viejo()
+            nombre_imagen = random.choice(conf.PAREJAS_X_ITEMS.values())
+            item = actor_item.Item(imagen=nombre_imagen, x=x, y=y)
+            self.items.append(item)
+        x, y = self._random_xy_lejos_viejo()
+        self.items.append(actor_item.Item(imagen=conf.PISTOLA, x=x, y=y))
+#~
+        #~ # Creamos el timer del juego
+        #~ self.timer = pilas.actores.Temporizador(
+            #~ x=(pilas.mundo.motor.ancho_original/2)-50,
+            #~ y=(pilas.mundo.motor.alto_original/2)-10,
+            #~ fuente="visitor1.ttf",
+        #~ )
+        #~ self.timer.ajustar(TIEMPO_DE_JUEGO, self.youlose)
+        #~ self.timer.iniciar()
+#~
+        #~ # Contador de parejas rotas
+        #~ self.corazon_roto = pilas.actores.Actor(
+            #~ pilas.imagenes.cargar_grilla("corazon_roto.png", 2),
+             #~ x=110, y=-210
+        #~ )
+        #~ self.corazon_roto.escala = 2
+        #~ self.corazon_roto.fijo = True
+        #~ self.corazon_roto.z = -20000
+        #~ self.contador = pilas.actores.Texto(
+            #~ str(len(self.parejas)),
+            #~ fuente="visitor1.ttf", x=147, y=-205
+        #~ )
+        #~ self.contador.color = pilas.colores.rojo
+        #~ self.contador.fijo = True
+        #~ self.contador.z = -20000
+#~
+        #~ # Vinculamos las colisiones
+        #~ self.vincular_colisiones()
+#~
+        #~ # Eventos globales
+        self.actualizar.conectar(self._centrar_camara)
         pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
 
     def regresar_al_menu(self, evento):
