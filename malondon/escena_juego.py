@@ -114,8 +114,8 @@ class Juego(pilas.escena.Base):
         self.items.append(actor_item.Item(imagen=conf.PISTOLA, x=x, y=y))
 
         # Creamos el timer del juego
-        x=(pilas.mundo.motor.ancho_original/2)-50,
-        y=(pilas.mundo.motor.alto_original/2)-10,
+        x=(pilas.mundo.motor.ancho_original/2)-50
+        y=(pilas.mundo.motor.alto_original/2)-10
         self.timer = pilas.actores.Temporizador(x=x, y=y, fuente="visitor1.ttf")
         self.timer.ajustar(conf.TIEMPO_DE_JUEGO, self.youlose)
         self.timer.iniciar()

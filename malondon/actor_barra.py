@@ -44,8 +44,8 @@ class Barra(pilas.actores.Actor):
         texto = unicode(evt.texto)
         if not es_repeticion and texto.isdigit():
             idx = int(texto) - 1
-            if 0 <= idx < self.capacidad:
-                self.se_activo_item.emitir(item=idx)
+            if 0 <= idx < self.capacidad and idx < len(self._contenedor):
+                self.se_activo_item.emitir(item_idx=idx, item_nro=idx+1)
 
     def agregar_item(self, item):
         if len(self._contenedor) < self.capacidad:
