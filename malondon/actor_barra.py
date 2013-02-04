@@ -37,9 +37,9 @@ class Barra(pilas.actores.Actor):
         self.se_activo_item = pilas.evento.Evento("se_activo_item")
         self._contenedor = []
         self._numeros = []
-        pilas.escena_actual().pulsa_tecla.conectar(self._suelta_tecla)
+        pilas.escena_actual().pulsa_tecla.conectar(self._pulsa_tecla)
 
-    def _suelta_tecla(self, evt):
+    def _pulsa_tecla(self, evt):
         es_repeticion = evt.es_repeticion
         texto = unicode(evt.texto)
         if not es_repeticion and texto.isdigit():
@@ -51,21 +51,27 @@ class Barra(pilas.actores.Actor):
         if len(self._contenedor) < self.capacidad:
             icono = item.imagen.ruta_original
             contenido = pilas.actores.Actor(imagen=icono, y=self.y)
-            if self._contenedor:
-                contenido.x = self._contenedor[-1].x + 50
-            else:
-                contenido.x = self.x - (self.ancho / 2) + 24
             contenido.z = self.z - 1
             contenido.fijo = True
             self._contenedor.append(contenido)
             item.eliminar()
             item.destruir()
 
+    def quitar_item(self, idx):
+        contenido = self._contenedor.pop(idx)
+        item = actor_item.Item(contenido.imagen)
+        contenido.eliminar()
+        return item
+
     def actualizar(self):
         while self._numeros:
             numero = self._numeros.pop()
             numero.eliminar()
         for idx, contenido in enumerate(self._contenedor):
+            if idx == 0:
+                contenido.x = self.x - (self.ancho / 2) + 24
+            else:
+                contenido.x = self._contenedor[idx-1].x + 50
             numero = pilas.actores.Texto(str(idx+1),
                              fuente="visitor1.ttf", x=contenido.x,
                              y=contenido.y-5)

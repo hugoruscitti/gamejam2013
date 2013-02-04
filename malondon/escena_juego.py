@@ -44,6 +44,8 @@ class Juego(pilas.escena.Base):
 
     def _cerca_de_xy(self, x, y, radio=0):
         inc_x, inc_y = 2, 2
+        x += random.randint(radio, radio+inc_x)
+        y += random.randint(radio, radio+inc_y)
         while not self._is_valid(x, y):
             x += random.randint(radio+1, radio+inc_x)
             y += random.randint(radio+1, radio+inc_y)
@@ -138,7 +140,15 @@ class Juego(pilas.escena.Base):
 
         # Eventos globales
         self.actualizar.conectar(self._centrar_camara)
+        self.viejo.se_activo_item.conectar(self.se_usa_item)
         pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
+
+    def se_usa_item(self, evt):
+        item = self.viejo.traer_item_en_indice(evt.item_idx)
+        x, y = self._cerca_de_xy(self.viejo.x, self.viejo.y,
+                                 max(self.viejo.alto, self.viejo.ancho) + 100)
+        item.x, item.y = x, y
+        self.items.append(item)
 
     def regresar_al_menu(self, evento):
         self.musicajuego.detener()

@@ -38,6 +38,7 @@ class Viejo(pilas.actores.Calvo):
         self.centro = ("centro", "abajo")
         self.barra = actor_barra.Barra()
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
+        self.se_activo_item = self.barra.se_activo_item # bridgeamos el evento
 
     def bloquear(self):
         try:
@@ -60,6 +61,9 @@ class Viejo(pilas.actores.Calvo):
 
     def agarrar_item(self, item):
         self.barra.agregar_item(item)
+
+    def traer_item_en_indice(self, idx):
+        return self.barra.quitar_item(idx)
 
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2
