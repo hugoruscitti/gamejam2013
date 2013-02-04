@@ -59,7 +59,7 @@ class Viejo(pilas.actores.Calvo):
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
     def agarrar_item(self, item):
-        self.barra.insertar_item(item)
+        self.barra.agregar_item(item)
 
     def actualizar(self):
         topy = self.mapa.imagen.alto() / 2

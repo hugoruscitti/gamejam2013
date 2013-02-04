@@ -112,36 +112,31 @@ class Juego(pilas.escena.Base):
             self.items.append(item)
         x, y = self._random_xy_lejos_viejo()
         self.items.append(actor_item.Item(imagen=conf.PISTOLA, x=x, y=y))
-#~
-        #~ # Creamos el timer del juego
-        #~ self.timer = pilas.actores.Temporizador(
-            #~ x=(pilas.mundo.motor.ancho_original/2)-50,
-            #~ y=(pilas.mundo.motor.alto_original/2)-10,
-            #~ fuente="visitor1.ttf",
-        #~ )
-        #~ self.timer.ajustar(TIEMPO_DE_JUEGO, self.youlose)
-        #~ self.timer.iniciar()
-#~
+
+        # Creamos el timer del juego
+        x=(pilas.mundo.motor.ancho_original/2)-50,
+        y=(pilas.mundo.motor.alto_original/2)-10,
+        self.timer = pilas.actores.Temporizador(x=x, y=y, fuente="visitor1.ttf")
+        self.timer.ajustar(conf.TIEMPO_DE_JUEGO, self.youlose)
+        self.timer.iniciar()
+
         #~ # Contador de parejas rotas
-        #~ self.corazon_roto = pilas.actores.Actor(
-            #~ pilas.imagenes.cargar_grilla("corazon_roto.png", 2),
-             #~ x=110, y=-210
-        #~ )
+        #~ self.corazon_roto = pilas.actores.Actor("corazon_roto.png",
+                                                #~ x=110, y=-210)
         #~ self.corazon_roto.escala = 2
         #~ self.corazon_roto.fijo = True
         #~ self.corazon_roto.z = -20000
-        #~ self.contador = pilas.actores.Texto(
-            #~ str(len(self.parejas)),
-            #~ fuente="visitor1.ttf", x=147, y=-205
-        #~ )
+        #~ self.contador = pilas.actores.Texto(str(len(self.parejas)),
+                                            #~ fuente="visitor1.ttf",
+                                            #~ x=147, y=-205)
         #~ self.contador.color = pilas.colores.rojo
         #~ self.contador.fijo = True
         #~ self.contador.z = -20000
-#~
-        #~ # Vinculamos las colisiones
-        #~ self.vincular_colisiones()
-#~
-        #~ # Eventos globales
+
+        # Vinculamos las colisiones
+        self.vincular_colisiones()
+
+        # Eventos globales
         self.actualizar.conectar(self._centrar_camara)
         pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
 
@@ -165,12 +160,8 @@ class Juego(pilas.escena.Base):
         self.musicajuego.continuar()
 
     def vincular_colisiones(self):
-        pilas.escena_actual().colisiones.agregar(self.viejo,
-                                                 self.parejas.keys(),
-                                                 self.ir_a_encuentro)
-        pilas.escena_actual().colisiones.agregar(self.viejo,
-                                                 self.lista_items,
-                                                 self.encontrar_items)
+        #self.colisiones.agregar(self.viejo, self.parejas, self.ir_a_encuentro)
+        self.colisiones.agregar(self.viejo, self.items, self.encontrar_items)
 
     def youwin(self):
         self.musicajuego.detener()
@@ -192,6 +183,7 @@ class Juego(pilas.escena.Base):
 
     def encontrar_items(self, viejo, item):
         viejo.agarrar_item(item)
+        self.items.remove(item)
 
     def ir_a_encuentro(self, viejo, act):
         self.musicajuego.pausar()
