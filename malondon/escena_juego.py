@@ -83,6 +83,7 @@ class Juego(pilas.escena.Base):
             self.camara.y = [self.viejo.y]
 
     def iniciar(self):
+
         # iniciamos la musica
         self.musicajuego = pilas.sonidos.cargar("musicajuego.mp3")
         self.musicajuego.reproducir()
@@ -152,7 +153,6 @@ class Juego(pilas.escena.Base):
 
     def regresar_al_menu(self, evento):
         self.musicajuego.detener()
-        self.camara.x, self.camara_y = 0, 0
         pilas.cambiar_escena(escena_menu.Menu())
 
     def reanudar(self):
