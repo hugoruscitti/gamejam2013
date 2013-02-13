@@ -38,26 +38,37 @@ class Juego(pilas.escena.Base):
 
     def _is_valid(self, x, y):
         try:
-            return not self.mapa.es_punto_solido(x, y)
+            mm_ancho = self.mapa.ancho / 2
+            mm_alto = self.mapa.alto / 2
+            return not self.mapa.es_punto_solido(x, y) and \
+                    abs(x) <= mm_ancho and abs(y) <= mm_alto
         except:
             return False
 
-    def _cerca_de_xy(self, x, y, radio=0):
-        inc_x, inc_y = 2, 2
-        x += random.randint(radio, radio+inc_x)
-        y += random.randint(radio, radio+inc_y)
-        while not self._is_valid(x, y):
-            x += random.randint(radio+1, radio+inc_x)
-            y += random.randint(radio+1, radio+inc_y)
-            if random.randint(0, 1):
-                x = -x
-            if random.randint(0, 1):
-                y = -y
-            if inc_x == inc_y:
+    def _cerca_de_xy(self, x, y, radio_x, radio_y):
+        new_x, new_y = x, y
+        inc_x, inc_y = 0, 0
+        toca_x = True
+        while True:
+            for sign_x in (0, 1, -1):
+                new_x = new_x + inc_y * sign_x
+                for sign_y in (0, 1, -1):
+                    new_y = new_y + inc_y * sign_y
+                    if self._is_valid(new_x, new_y):
+                        return new_x, new_y
+            if toca_x and inc_x == 0:
+                inc_x = radio_x
+                toca_x = False
+            elif toca_x:
                 inc_x += 1
-            else:
+                toca_x = False
+            elif not toca_x and inc_y == 0:
+                inc_y = radio_y
+                toca_x = True
+            elif not toca_x:
                 inc_y += 1
-        return x, y
+                toca_x = True
+
 
     def _random_xy_lejos_viejo(self):
         valid = False
@@ -82,6 +93,12 @@ class Juego(pilas.escena.Base):
         if abs(self.viejo.y) < mm_alto - mp_alto:
             self.camara.y = [self.viejo.y]
 
+    def _habilitar_items_tirados(self, evt):
+        for item in tuple(self.items_tirados):
+            if self.viejo.distancia_con(item) > 40:
+                self.items_tirados.remove(item)
+                self.items.append(item)
+
     def iniciar(self):
 
         # iniciamos la musica
@@ -94,12 +111,13 @@ class Juego(pilas.escena.Base):
 
         # creamos el protagonista
         self.viejo = actor_viejo.Viejo(self.mapa)
-        x, y = self._cerca_de_xy(0, 0, max([self.viejo.alto, self.viejo.ancho]))
+        x, y = self._cerca_de_xy(0, 0, self.viejo.ancho, self.viejo.alto)
         self.viejo.x, self.viejo.y = x, y
 
         # Crear parejas
         self.parejas = []
         self.items = []
+        self.items_tirados = []
         while len(self.parejas) < conf.CANTIDAD_PAREJAS:
             pareja = actor_pareja.Pareja(*self._random_xy_lejos_viejo())
             self.parejas.append(pareja)
@@ -141,15 +159,14 @@ class Juego(pilas.escena.Base):
 
         # Eventos globales
         self.actualizar.conectar(self._centrar_camara)
+        self.actualizar.conectar(self._habilitar_items_tirados)
         self.viejo.se_activo_item.conectar(self.se_usa_item)
         pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
 
     def se_usa_item(self, evt):
         item = self.viejo.traer_item_en_indice(evt.item_idx)
-        x, y = self._cerca_de_xy(self.viejo.x, self.viejo.y,
-                                 max(self.viejo.alto, self.viejo.ancho) + 100)
-        item.x, item.y = x, y
-        self.items.append(item)
+        item.x, item.y = self.viejo.x, self.viejo.y
+        self.items_tirados.append(item)
 
     def regresar_al_menu(self, evento):
         self.musicajuego.detener()
