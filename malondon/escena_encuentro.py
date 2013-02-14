@@ -64,17 +64,10 @@ class Encuentro(pilas.escena.Base):
 
         pilas.eventos.click_de_mouse.conectar(self.hace_click_de_mouse)
 
-    def hace_click_de_mouse(self, evento):
-        item = pilas.actores.utils.obtener_actor_en(evento.x, evento.y)
-
-        if isinstance(item, actore_item.Item):
-            if self.pareja.se_elimina_con_item(item):
-                self.pareja.debe_eliminarse = True
-            self.salir()
-
     def salir(self):
         self.sonidocorazon.detener()
-        self.viejo.y = self.viejo.y -50
+        self.viejo.y = self.pareja.y + 50 * random.choice([1, -1])
+        inc_x = 1
         while self.mapa.es_punto_solido(self.viejo.x, self.viejo.y):
             self.viejo.y = self.viejo.y -50
         pilas.recuperar_escena()

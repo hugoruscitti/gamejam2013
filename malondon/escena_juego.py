@@ -108,6 +108,9 @@ class Juego(pilas.escena.Base):
         if not self.parejas:
             self.viejo.bloquear()
             pilas.mundo.agregar_tarea(2, self.youwin)
+        elif len(self.items) + len(self.items_tirados) == 0:
+            self.viejo.bloquear()
+            pilas.mundo.agregar_tarea(2, self.youlose)
 
     def iniciar(self):
 
@@ -145,8 +148,8 @@ class Juego(pilas.escena.Base):
         self.items.append(actor_item.Item(imagen=conf.PISTOLA, x=x, y=y))
 
         # Creamos el timer del juego
-        x = (pilas.mundo.motor.ancho_original/2)-50
-        y = (pilas.mundo.motor.alto_original/2)-10
+        x = (pilas.mundo.motor.ancho_original/2) - 50
+        y = (pilas.mundo.motor.alto_original/2) - 10
         self.timer = pilas.actores.Temporizador(x=x, y=y, fuente="visitor1.ttf")
         self.timer.ajustar(conf.TIEMPO_DE_JUEGO, self.youlose)
         self.timer.iniciar()
@@ -187,16 +190,15 @@ class Juego(pilas.escena.Base):
 
     def reanudar(self):
         self.camara.x, self.camara.y = self.viejo.x, self.viejo.y
-        for k in self.parejas.keys():
-            pareja = self.parejas[k]
-            if pareja.debe_eliminarse:
-                pareja.romper_pareja()
-                self.parejas.pop(k)
+        for pareja in tuple(self.parejas):
+            if pareja.para_eliminar:
+                actor_pareja.romper_pareja(pareja)
+                self.parejas.remove(pareja)
         self.vincular_colisiones()
         self.musicajuego.continuar()
 
     def vincular_colisiones(self):
-        #self.colisiones.agregar(self.viejo, self.parejas, self.ir_a_encuentro)
+        self.colisiones.agregar(self.viejo, self.parejas, self.ir_a_encuentro)
         self.colisiones.agregar(self.viejo, self.items, self.encontrar_items)
 
     def youwin(self):
@@ -225,7 +227,6 @@ class Juego(pilas.escena.Base):
         self.musicajuego.pausar()
         encuentro = escena_encuentro.Encuentro(pareja, viejo, self.mapa)
         pilas.almacenar_escena(encuentro)
-
 
 
 #===============================================================================

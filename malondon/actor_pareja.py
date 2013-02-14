@@ -40,7 +40,7 @@ class Pareja(pilas.actores.Animacion):
         self.radio_de_colision = max(self.alto, self.ancho) / 3
         self.centro = ("centro", "abajo")
 
-        self.eliminar = False
+        self.para_eliminar = False
         self.nombre_imagen_grande = random.choice(conf.PAREJAS_X_ITEMS.keys())
         self.imagen_grande = pilas.imagenes.cargar(self.nombre_imagen_grande)
 

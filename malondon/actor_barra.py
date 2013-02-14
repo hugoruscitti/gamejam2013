@@ -29,7 +29,7 @@ import actor_item
 
 class Barra(pilas.actores.Actor):
 
-    def __init__(self, items=[], fijo=True, x=-110, y=-210, capacidad=8):
+    def __init__(self, items=[], fijo=True, x=0, y=-210, capacidad=8):
         pilas.actores.Actor.__init__(self, imagen="barra.png", x=x, y=y)
         self.z = -10000
         self.fijo = True
