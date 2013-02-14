@@ -79,7 +79,7 @@ class Menu(pilas.escena.Base):
     def iniciar(self):
         self.camara.x, self.camara.y = 0, 0
         self.musicamenu = pilas.musica.cargar("musicamenu.mp3")
-        self.musicamenu.reproducir()
+        self.musicamenu.reproducir(repetir=True)
         pilas.fondos.Fondo("menu.png")
         pilas.mundo.agregar_tarea(2, self.mostrar_menu)
 
