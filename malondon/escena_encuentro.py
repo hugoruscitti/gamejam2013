@@ -67,7 +67,7 @@ class Encuentro(pilas.escena.Base):
     def salir(self):
         self.sonidocorazon.detener()
         self.viejo.y = self.pareja.y + 50 * random.choice([1, -1])
-        inc_x = 1
+        self.viejo.x = 50
         while self.mapa.es_punto_solido(self.viejo.x, self.viejo.y):
             self.viejo.y = self.viejo.y -50
         pilas.recuperar_escena()

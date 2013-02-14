@@ -40,6 +40,12 @@ class Viejo(pilas.actores.Calvo):
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
         self.se_activo_item = self.barra.se_activo_item # bridgeamos el evento
 
+    def recordar_coordenadas(self):
+        if self.x != self.past_x:
+            self.past_x = self.x
+        if self.y != self.past_y:
+            self.past_y = self.y
+
     def bloquear(self):
         try:
             self.dejar_de_malondiar()

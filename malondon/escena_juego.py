@@ -69,7 +69,6 @@ class Juego(pilas.escena.Base):
                 inc_y += 1
                 toca_x = True
 
-
     def _random_xy_lejos_viejo(self):
         valid = False
         while not valid:
@@ -181,6 +180,8 @@ class Juego(pilas.escena.Base):
 
     def se_usa_item(self, evt):
         item = self.viejo.traer_item_en_indice(evt.item_idx)
+        #item.escala = 0
+        item.escala = [1.8, 1], 0.3
         item.x, item.y = self.viejo.x, self.viejo.y
         self.items_tirados.append(item)
 
