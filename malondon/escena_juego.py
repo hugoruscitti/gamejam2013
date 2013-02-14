@@ -105,14 +105,14 @@ class Juego(pilas.escena.Base):
 
     def _actualizar_parejas(self, evt):
         self.contador.texto = str(len(self.parejas))
-        if self.parejas:
+        if not self.parejas:
             self.viejo.bloquear()
             pilas.mundo.agregar_tarea(2, self.youwin)
 
     def iniciar(self):
 
         # iniciamos la musica
-        self.musicajuego = pilas.sonidos.cargar("musicajuego.mp3")
+        self.musicajuego = pilas.musica.cargar("musicajuego.mp3")
         self.musicajuego.reproducir(repetir=True)
 
         # cargamos el mapa
@@ -218,8 +218,8 @@ class Juego(pilas.escena.Base):
         pilas.cambiar_escena(youlose)
 
     def encontrar_items(self, viejo, item):
-        viejo.agarrar_item(item)
-        self.items.remove(item)
+        if viejo.agarrar_item(item):
+            self.items.remove(item)
 
     def ir_a_encuentro(self, viejo, pareja):
         self.musicajuego.pausar()

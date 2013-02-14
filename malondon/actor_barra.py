@@ -57,6 +57,8 @@ class Barra(pilas.actores.Actor):
             item.eliminar()
             item.destruir()
             self.actualizar()
+            return True
+        return False
 
     def quitar_item(self, idx):
         contenido = self._contenedor.pop(idx)

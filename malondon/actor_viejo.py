@@ -60,7 +60,7 @@ class Viejo(pilas.actores.Calvo):
         pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
     def agarrar_item(self, item):
-        self.barra.agregar_item(item)
+        return self.barra.agregar_item(item)
 
     def traer_item_en_indice(self, idx):
         return self.barra.quitar_item(idx)
