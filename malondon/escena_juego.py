@@ -95,15 +95,25 @@ class Juego(pilas.escena.Base):
 
     def _habilitar_items_tirados(self, evt):
         for item in tuple(self.items_tirados):
-            if self.viejo.distancia_con(item) > 40:
+            if self.viejo.distancia_con(item) > max(item.alto, item.ancho):
                 self.items_tirados.remove(item)
                 self.items.append(item)
+
+    def _cambiar_color_del_timer_si_falta_poco(self, evt):
+        if int(self.timer.texto) <= 11:
+            self.timer.color = pilas.colores.rojo
+
+    def _actualizar_parejas(self, evt):
+        self.contador.texto = str(len(self.parejas))
+        if not self.parejas:
+            self.viejo.bloquear()
+            pilas.mundo.agregar_tarea(2, self.youwin)
 
     def iniciar(self):
 
         # iniciamos la musica
         self.musicajuego = pilas.sonidos.cargar("musicajuego.mp3")
-        self.musicajuego.reproducir()
+        self.musicajuego.reproducir(repetir=True)
 
         # cargamos el mapa
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")
@@ -126,7 +136,7 @@ class Juego(pilas.escena.Base):
             self.items.append(item)
 
         # Agregamos todos los items que faltan mas la pistola
-        while len(self.items) < conf.CANTIDAD_ITEMS:
+        while len(self.items) < conf.CANTIDAD_ITEM_EXTRAS + conf.CANTIDAD_PAREJAS:
             x, y = self._random_xy_lejos_viejo()
             nombre_imagen = random.choice(conf.PAREJAS_X_ITEMS.values())
             item = actor_item.Item(imagen=nombre_imagen, x=x, y=y)
@@ -135,24 +145,25 @@ class Juego(pilas.escena.Base):
         self.items.append(actor_item.Item(imagen=conf.PISTOLA, x=x, y=y))
 
         # Creamos el timer del juego
-        x=(pilas.mundo.motor.ancho_original/2)-50
-        y=(pilas.mundo.motor.alto_original/2)-10
+        x = (pilas.mundo.motor.ancho_original/2)-50
+        y = (pilas.mundo.motor.alto_original/2)-10
         self.timer = pilas.actores.Temporizador(x=x, y=y, fuente="visitor1.ttf")
         self.timer.ajustar(conf.TIEMPO_DE_JUEGO, self.youlose)
         self.timer.iniciar()
 
-        #~ # Contador de parejas rotas
-        #~ self.corazon_roto = pilas.actores.Actor("corazon_roto.png",
-                                                #~ x=110, y=-210)
-        #~ self.corazon_roto.escala = 2
-        #~ self.corazon_roto.fijo = True
-        #~ self.corazon_roto.z = -20000
-        #~ self.contador = pilas.actores.Texto(str(len(self.parejas)),
-                                            #~ fuente="visitor1.ttf",
-                                            #~ x=147, y=-205)
-        #~ self.contador.color = pilas.colores.rojo
-        #~ self.contador.fijo = True
-        #~ self.contador.z = -20000
+        # Contador de parejas rotas
+        x = -(pilas.mundo.motor.ancho_original/2) + 30
+        y = (pilas.mundo.motor.alto_original/2) - 15
+        self.corazon_roto = pilas.actores.Actor("corazon_roto.png", x=x, y=y)
+        self.corazon_roto.fijo = True
+        self.corazon_roto.z = -20000
+        self.contador = pilas.actores.Texto(str(len(self.parejas)),
+                                            fuente="visitor1.ttf",
+                                            x=self.corazon_roto.x + 40,
+                                            y=self.corazon_roto.y + 5)
+        self.contador.color = pilas.colores.rojo
+        self.contador.fijo = True
+        self.contador.z = -20000
 
         # Vinculamos las colisiones
         self.vincular_colisiones()
@@ -160,6 +171,8 @@ class Juego(pilas.escena.Base):
         # Eventos globales
         self.actualizar.conectar(self._centrar_camara)
         self.actualizar.conectar(self._habilitar_items_tirados)
+        self.actualizar.conectar(self._cambiar_color_del_timer_si_falta_poco)
+        self.actualizar.conectar(self._actualizar_parejas)
         self.viejo.se_activo_item.conectar(self.se_usa_item)
         pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
 
@@ -180,10 +193,6 @@ class Juego(pilas.escena.Base):
                 pareja.romper_pareja()
                 self.parejas.pop(k)
         self.vincular_colisiones()
-        self.contador.texto = str(len(self.parejas))
-        if self.parejas:
-            self.viejo.bloquear()
-            pilas.mundo.agregar_tarea(2, self.youwin)
         self.musicajuego.continuar()
 
     def vincular_colisiones(self):
@@ -212,10 +221,10 @@ class Juego(pilas.escena.Base):
         viejo.agarrar_item(item)
         self.items.remove(item)
 
-    def ir_a_encuentro(self, viejo, act):
+    def ir_a_encuentro(self, viejo, pareja):
         self.musicajuego.pausar()
-        pareja = self.parejas[act]
-        pilas.almacenar_escena(escena_encuentro.Encuentro(pareja, viejo, self.mapa))
+        encuentro = escena_encuentro.Encuentro(pareja, viejo, self.mapa)
+        pilas.almacenar_escena(encuentro)
 
 
 

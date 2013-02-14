@@ -68,9 +68,9 @@ PISTOLA = "pistola.png"
 
 CANTIDAD_PAREJAS = 20
 
-CANTIDAD_ITEMS = CANTIDAD_PAREJAS + 10
+CANTIDAD_ITEM_EXTRAS = 5 # no incluye a la pistola
 
-TIEMPO_DE_JUEGO = int((CANTIDAD_PAREJAS / 2.0) * 60)
+TIEMPO_DE_JUEGO = CANTIDAD_PAREJAS * 10
 
 
 #===============================================================================
