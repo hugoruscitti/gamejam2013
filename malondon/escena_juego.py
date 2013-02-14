@@ -105,7 +105,7 @@ class Juego(pilas.escena.Base):
 
     def _actualizar_parejas(self, evt):
         self.contador.texto = str(len(self.parejas))
-        if not self.parejas:
+        if self.parejas:
             self.viejo.bloquear()
             pilas.mundo.agregar_tarea(2, self.youwin)
 
