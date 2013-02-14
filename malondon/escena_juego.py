@@ -100,7 +100,7 @@ class Juego(pilas.escena.Base):
                 self.items.append(item)
 
     def _cambiar_color_del_timer_si_falta_poco(self, evt):
-        if int(self.timer.texto) <= 11:
+        if int(self.timer.texto) <= conf.TIEMPO_DE_JUEGO * 0.10:
             self.timer.color = pilas.colores.rojo
 
     def _actualizar_parejas(self, evt):
