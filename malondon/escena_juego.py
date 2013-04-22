@@ -107,6 +107,8 @@ class Juego(pilas.escena.Base):
 
     def _cambiar_color_del_timer_si_falta_poco(self, evt):
         if int(self.timer.tiempo) <= conf.TIEMPO_DE_JUEGO * 0.10:
+            self.musicajuego.detener()
+            self.sonido_corazon.reproducir(True)
             self.timer.color = pilas.colores.rojo
 
     def _actualizar_parejas(self, evt):
@@ -128,6 +130,7 @@ class Juego(pilas.escena.Base):
         # iniciamos la musica
         self.musicajuego = pilas.musica.cargar("musicajuego.mp3")
         self.musicajuego.reproducir(repetir=True)
+        self.sonido_corazon = pilas.sonidos.cargar("corazon.mp3")
 
         # cargamos el mapa
         self.mapa = pilas.actores.MapaTiled("mapaprincipal.tmx")

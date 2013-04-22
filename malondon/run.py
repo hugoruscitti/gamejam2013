@@ -39,8 +39,8 @@ def main():
     logos.agregar_logo("cbagamejam2013.png", timer=2.5,
                        sonido="corazon_corto.mp3"),
     logos.agregar_logo("gpl3.png")
-    pilas.cambiar_escena(escena_juego.Juego())
-    #pilas.cambiar_escena(logos)
+    #pilas.cambiar_escena(escena_juego.Juego())
+    pilas.cambiar_escena(logos)
     pilas.ejecutar()
 
 if __name__ == "__main__":
