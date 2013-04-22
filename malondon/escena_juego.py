@@ -18,6 +18,8 @@
 #===============================================================================
 
 import random
+import time
+
 import pilas
 
 
@@ -26,8 +28,6 @@ import actor_viejo
 import actor_pareja
 import actor_item
 import escena_menu
-import escena_encuentro
-
 
 
 #===============================================================================
@@ -69,6 +69,12 @@ class Juego(pilas.escena.Base):
                 inc_y += 1
                 toca_x = True
 
+    def _lejos_de_demas_parejas(self, x, y):
+        for p in self.parejas:
+            if p.distancia_al_punto(x, y) < 30:
+                return False
+        return True
+
     def _random_xy_lejos_viejo(self):
         valid = False
         while not valid:
@@ -79,10 +85,11 @@ class Juego(pilas.escena.Base):
             if random.randint(0, 1):
                 y = -y
             valid = self._is_valid(x, y) \
-                    and self.viejo.distancia_al_punto(x, y) > 300
+                    and self.viejo.distancia_al_punto(x, y) > 300 \
+                    and self._lejos_de_demas_parejas(x, y)
         return x, y
 
-    def _centrar_camara(self, evt):
+    def _centrar_camara(self, evt=None):
         mm_ancho = self.mapa.ancho / 2
         mm_alto = self.mapa.alto / 2
         mp_ancho = pilas.mundo.motor.ancho_original / 2
@@ -99,7 +106,7 @@ class Juego(pilas.escena.Base):
                 self.items.append(item)
 
     def _cambiar_color_del_timer_si_falta_poco(self, evt):
-        if int(self.timer.texto) <= conf.TIEMPO_DE_JUEGO * 0.10:
+        if int(self.timer.tiempo) <= conf.TIEMPO_DE_JUEGO * 0.10:
             self.timer.color = pilas.colores.rojo
 
     def _actualizar_parejas(self, evt):
@@ -110,6 +117,11 @@ class Juego(pilas.escena.Base):
         elif len(self.items) + len(self.items_tirados) == 0:
             self.viejo.bloquear()
             pilas.mundo.agregar_tarea(2, self.youlose)
+
+    def _si_me_alejo_de_encuentro(self, evt):
+        if self.encuentro_actual and \
+            self.viejo.distancia_con(self.encuentro_actual) > 10:
+                self.salir_encuentro()
 
     def iniciar(self):
 
@@ -125,6 +137,10 @@ class Juego(pilas.escena.Base):
         self.viejo = actor_viejo.Viejo(self.mapa)
         x, y = self._cerca_de_xy(0, 0, self.viejo.ancho, self.viejo.alto)
         self.viejo.x, self.viejo.y = x, y
+        self.camara_x, self.camara_y = self.camara.x, self.camara.y
+
+        # variable para contener el encuentro
+        self.encuentro_actual = None
 
         # Crear parejas
         self.parejas = []
@@ -152,6 +168,7 @@ class Juego(pilas.escena.Base):
         self.timer = pilas.actores.Temporizador(x=x, y=y, fuente="visitor1.ttf")
         self.timer.ajustar(conf.TIEMPO_DE_JUEGO, self.youlose)
         self.timer.iniciar()
+        self.time = 0
 
         # Contador de parejas rotas
         x = -(pilas.mundo.motor.ancho_original/2) + 30
@@ -168,39 +185,34 @@ class Juego(pilas.escena.Base):
         self.contador.z = -20000
 
         # Vinculamos las colisiones
-        self.vincular_colisiones()
+        self.colisiones.agregar(self.viejo, self.parejas, self.encuentro)
+        self.colisiones.agregar(self.viejo, self.items, self.encontrar_items)
 
         # Eventos globales
+        self.actualizar.conectar(self._si_me_alejo_de_encuentro)
         self.actualizar.conectar(self._centrar_camara)
         self.actualizar.conectar(self._habilitar_items_tirados)
         self.actualizar.conectar(self._cambiar_color_del_timer_si_falta_poco)
         self.actualizar.conectar(self._actualizar_parejas)
         self.viejo.se_activo_item.conectar(self.se_usa_item)
-        pilas.eventos.pulsa_tecla_escape.conectar(self.regresar_al_menu)
+        pilas.eventos.pulsa_tecla_escape.conectar(self.se_presiona_escape)
 
     def se_usa_item(self, evt):
         item = self.viejo.traer_item_en_indice(evt.item_idx)
-        #item.escala = 0
-        item.escala = [1.8, 1], 0.3
-        item.x, item.y = self.viejo.x, self.viejo.y
-        self.items_tirados.append(item)
+        if self.encuentro_actual:
+            pareja = self.encuentro_actual
+            if pareja.debe_eliminarse(item):
+                self.salir_encuentro()
+                self.parejas.remove(pareja)
+                actor_pareja.romper_pareja(pareja)
+        else:
+            item.escala = [1.8, 1], 0.3
+            item.x, item.y = self.viejo.x, self.viejo.y
+            self.items_tirados.append(item)
 
-    def regresar_al_menu(self, evento):
+    def se_presiona_escape(self, evt):
         self.musicajuego.detener()
         pilas.cambiar_escena(escena_menu.Menu())
-
-    def reanudar(self):
-        self.camara.x, self.camara.y = self.viejo.x, self.viejo.y
-        for pareja in tuple(self.parejas):
-            if pareja.para_eliminar:
-                actor_pareja.romper_pareja(pareja)
-                self.parejas.remove(pareja)
-        self.vincular_colisiones()
-        self.musicajuego.continuar()
-
-    def vincular_colisiones(self):
-        self.colisiones.agregar(self.viejo, self.parejas, self.ir_a_encuentro)
-        self.colisiones.agregar(self.viejo, self.items, self.encontrar_items)
 
     def youwin(self):
         self.musicajuego.detener()
@@ -224,10 +236,15 @@ class Juego(pilas.escena.Base):
         if viejo.agarrar_item(item):
             self.items.remove(item)
 
-    def ir_a_encuentro(self, viejo, pareja):
-        self.musicajuego.pausar()
-        encuentro = escena_encuentro.Encuentro(pareja, viejo, self.mapa)
-        pilas.almacenar_escena(encuentro)
+    def salir_encuentro(self):
+        self.encuentro_actual.ocultar_encuentro()
+        self.encuentro_actual = None
+
+    def encuentro(self, viejo, pareja):
+        if self.encuentro_actual and self.encuentro_actual != pareja:
+            self.salir_encuentro()
+        pareja.encuentro(viejo.barra.x, viejo.barra.y + 200)
+        self.encuentro_actual = pareja
 
 
 #===============================================================================

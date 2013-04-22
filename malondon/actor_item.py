@@ -17,6 +17,8 @@
 # IMPORTS
 #===============================================================================
 
+import os
+
 import pilas
 
 
@@ -28,7 +30,7 @@ class Item(pilas.actores.Actor):
 
     def __init__(self, imagen, *args, **kwargs):
         super(Item, self).__init__(imagen=imagen, *args, **kwargs)
-        self.nombre_imagen = imagen
+        self.nombre_imagen = os.path.basename(self.imagen.ruta_original)
         self.radio_de_colision = max(self.ancho, self.alto) / 2
 
 

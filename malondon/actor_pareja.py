@@ -23,6 +23,26 @@ import pilas
 
 import conf
 
+#===============================================================================
+# ENCUENTRO
+#===============================================================================
+
+class _Encuentro(pilas.actores.Actor):
+
+    def __init__(self, imagen_a_mostrar):
+        super(_Encuentro, self).__init__(imagen="invisible.png")
+        self.imagen_a_mostrar = imagen_a_mostrar
+        self.fijo = True
+        self.z = -5000
+        self.escala = 0.8
+
+    def mostrar_en(self, x, y):
+        self.x = x; self.y = y
+        self.imagen = self.imagen_a_mostrar
+
+    def ocultar(self):
+        self.imagen = pilas.imagenes.cargar("invisible.png")
+
 
 #===============================================================================
 # PAREJA
@@ -40,15 +60,22 @@ class Pareja(pilas.actores.Animacion):
         self.radio_de_colision = max(self.alto, self.ancho) / 3
         self.centro = ("centro", "abajo")
 
-        self.para_eliminar = False
         self.nombre_imagen_grande = random.choice(conf.PAREJAS_X_ITEMS.keys())
-        self.imagen_grande = pilas.imagenes.cargar(self.nombre_imagen_grande)
+
+        imagen_grande = pilas.imagenes.cargar(self.nombre_imagen_grande)
+        self._encuentro = _Encuentro(imagen_grande)
+
+    def encuentro(self, x, y):
+        self._encuentro.mostrar_en(x, y)
+
+    def ocultar_encuentro(self):
+        self._encuentro.ocultar()
 
     def debe_eliminarse(self, item):
         """Informa si el item destruye a la pareja o no."""
-        self.eliminar = item.nombre_imagen in (self.nombre_imagen_item,
-                                               conf.PISTOLA)
-        return self.eliminar
+        imagen_item = conf.PAREJAS_X_ITEMS[self.nombre_imagen_grande]
+        print item.nombre_imagen, imagen_item
+        return item.nombre_imagen in (imagen_item, conf.PISTOLA)
 
     @property
     def me_elimina_el_item(self):

@@ -39,6 +39,12 @@ class Barra(pilas.actores.Actor):
         self._numeros = []
         pilas.escena_actual().pulsa_tecla.conectar(self._pulsa_tecla)
 
+    def __len__(self):
+        return len(self._contenedor)
+
+    def __iter__(self):
+        return iter(self._contenedor)
+
     def _pulsa_tecla(self, evt):
         es_repeticion = evt.es_repeticion
         texto = unicode(evt.texto)

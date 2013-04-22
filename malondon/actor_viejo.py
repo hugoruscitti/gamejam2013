@@ -48,10 +48,14 @@ class Viejo(pilas.actores.Calvo):
 
     def bloquear(self):
         try:
-            self.dejar_de_malondiar()
+            self.dejar_de_malondiar(True)
         except:
             pass
         self.hacer(pilas.comportamientos.Comportamiento())
+
+    def desbloquear(self):
+        pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
+        self.hacer(pilas.actores.personajes_rpg.Esperando())
 
     def malondiar(self):
         self.globo = pilas.actores.Actor(self._pensar, x=self.x, y=self.y)
@@ -60,10 +64,11 @@ class Viejo(pilas.actores.Calvo):
         self._roar.reproducir()
         pilas.mundo.agregar_tarea(2.2, self.dejar_de_malondiar)
 
-    def dejar_de_malondiar(self):
+    def dejar_de_malondiar(self, definitivamente=False):
         self.globo.eliminar()
         self._roar.detener()
-        pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
+        if not definitivamente:
+            pilas.mundo.agregar_tarea(random.randint(5, 10), self.malondiar)
 
     def agarrar_item(self, item):
         return self.barra.agregar_item(item)
