@@ -74,7 +74,6 @@ class Pareja(pilas.actores.Animacion):
     def debe_eliminarse(self, item):
         """Informa si el item destruye a la pareja o no."""
         imagen_item = conf.PAREJAS_X_ITEMS[self.nombre_imagen_grande]
-        print item.nombre_imagen, imagen_item
         return item.nombre_imagen in (imagen_item, conf.PISTOLA)
 
     @property

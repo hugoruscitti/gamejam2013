@@ -226,6 +226,7 @@ class Juego(pilas.escena.Base):
     def youlose(self):
         self.musicajuego.detener()
         self.camara.x, self.camara.y = 0, 0
+        self.viejo.bloquear()
         youlose = pilas.escena.Logos(escena_menu.Menu(), pasar_con_teclado=True,
                                      pasar_con_click_de_mouse=True,
                                      pilas_logo=False, mostrar_almenos=6)
